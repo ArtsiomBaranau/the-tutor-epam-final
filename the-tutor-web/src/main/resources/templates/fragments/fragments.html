@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
+
+    <title>Header</title>
+</head>
+<body>
+<div class="navbar" th:fragment="navbar">
+    Navigation Menu!
+</div>
+
+<footer class="footer mt-auto py-3" th:fragment="footer">
+    <div class="container">
+        <span class="text-muted">Place sticky footer content here...</span>
+    </div>
+</footer>
+
+<script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
+<script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

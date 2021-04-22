@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
+
+    <title>
+        User Info
+    </title>
+</head>
+<body>
+<h1 th:text="${(user.firstName)+' '(user.lastName)}"></h1>
+
+<div th:replace="fragments/fragments :: footer"></div>
+
+<script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
+<script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

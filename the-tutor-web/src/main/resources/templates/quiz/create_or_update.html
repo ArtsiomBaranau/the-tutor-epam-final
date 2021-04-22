@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
+
+    <title th:text="${quiz['new']} ? 'Create Quiz!' : 'Update Quiz!'">Title</title>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div th:replace="fragments/fragments :: navbar"></div>
+
+    <form class="form-group" th:object="${quiz}" th:with="link=${quiz['new']} ? '/quiz/create' : '/quiz/update'"
+          th:action="@{${link}}" method="post">
+
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{user}"/>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-default">Quiz name:</span>
+            </div>
+            <input type="text" class="form-control" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default" placeholder="Enter here quiz name..."
+                   th:field="*{name}">
+        </div>
+
+        <div class="form-row">
+            <div class="input-group col-md-10">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Quiz description:</span>
+                </div>
+                <textarea class="form-control" aria-label="With textarea" th:field="*{description}"></textarea>
+            </div>
+
+            <div class="input-group col-md-2">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Specialty:</span>
+                </div>
+                <div th:if="*{specialty}">
+                    <select class="form-control" th:field="*{specialty}">
+                        <option th:each="specialty:${specialtiesList}" th:value="${specialty.id}"
+                                th:text="${specialty.description}">Specialty...
+                        </option>
+                    </select>
+                    <!--                   find default selected value-->
+                </div>
+            </div>
+        </div>
+
+        <div th:each="question,itemQuestion:*{questions}">
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                          th:text="'Question '+${itemQuestion.count}+':'">Question:</span>
+                </div>
+                <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].id}"/>
+                <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].quiz}"/>
+
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                       aria-describedby="inputGroup-sizing-sm"
+                       th:field="*{questions[__${itemQuestion.index}__].description}">
+            </div>
+
+            <div th:each="answer,itemAnswer:*{questions[__${itemQuestion.index}__].answers}">
+
+                <input type="hidden"
+                       th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].id}"/>
+                <input type="hidden"
+                       th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].question}"/>
+
+                <div class="input-group w-75 offset-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input type="checkbox" aria-label="Checkbox for following text input"
+                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].isRight}">
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Text input with radio button"
+                           th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}">
+                </div>
+            </div>
+        </div>
+
+        <button
+                th:with="text=${quiz['new']} ? 'Create!' : 'Update!'"
+                class="btn btn-default" type="submit" th:text="${text}">Button!
+        </button>
+    </form>
+</div>
+
+<div th:replace="fragments/fragments :: footer"></div>
+
+<script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
+<script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>
