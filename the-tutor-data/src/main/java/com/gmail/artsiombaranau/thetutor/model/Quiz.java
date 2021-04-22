@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +30,12 @@ public class Quiz extends BaseEntity {
 
     @Column(name = "name", unique = true)
     @NotNull
+    @Size(min = 5, max = 255)
     private String name;
 
     @Column(name = "description")
     @NotNull
+    @Size(min = 5, max = 255)
     private String description;
 
     @ManyToOne

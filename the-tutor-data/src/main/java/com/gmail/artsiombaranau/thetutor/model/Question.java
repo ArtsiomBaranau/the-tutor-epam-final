@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class Question extends BaseEntity {
 
     @Column(name = "description")
     @NotNull
+    @Size(min = 5, max = 255)
     private String description;
 
     @Singular

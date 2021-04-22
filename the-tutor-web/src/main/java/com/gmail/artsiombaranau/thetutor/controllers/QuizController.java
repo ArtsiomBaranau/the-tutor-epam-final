@@ -1,7 +1,6 @@
 package com.gmail.artsiombaranau.thetutor.controllers;
 
 import com.gmail.artsiombaranau.thetutor.model.*;
-import com.gmail.artsiombaranau.thetutor.services.QuestionService;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
 import com.gmail.artsiombaranau.thetutor.services.SpecialtyService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
@@ -27,7 +26,6 @@ public class QuizController {
 
     private final UserService userService;
     private final QuizService quizService;
-    private final QuestionService questionService;
     private final SpecialtyService specialtyService;
 
     @GetMapping("/create")
@@ -50,7 +48,6 @@ public class QuizController {
     @PostMapping("/create")
     public String saveQuiz(@ModelAttribute @Valid Quiz quiz, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            log.info("Shit!");
             model.addAttribute("quiz", quiz);
             return CREATE_OR_UPDATE;
         }
@@ -82,9 +79,11 @@ public class QuizController {
     }
 
     @PostMapping("/update")
-    public String saveUpdatedQuiz(@ModelAttribute Quiz quiz, Model model) { //@PathVariable Long id,@Valid
-
-        log.info("Congratulations!");
+    public String saveUpdatedQuiz(@ModelAttribute @Valid Quiz quiz, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("quiz", quiz);
+            return CREATE_OR_UPDATE;
+        }
 
         if (quiz != null && quiz.getId() != null) {
             Quiz updatedAndSavedQuiz = quizService.save(quiz);
@@ -98,7 +97,6 @@ public class QuizController {
 
     @GetMapping("/{id}")
     public String getQuiz(@PathVariable Long id, Model model) {
-
         if (id != null) {
             Quiz quiz = quizService.findById(id);
             if (quiz != null) {

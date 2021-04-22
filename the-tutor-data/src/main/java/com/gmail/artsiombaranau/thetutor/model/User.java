@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,9 +32,12 @@ public class User extends BaseEntity {
 
     @Column(name = "username", unique = true)
     @NotNull
+    @Size(min = 3, max = 255)
+    @Pattern(regexp = "[A-Za-z0-9_]+")
     private String username;
 
     @Transient
+    @Size(min = 3)
     private String password;
 
     @Column(name = "encrypted_password")
@@ -54,10 +59,14 @@ public class User extends BaseEntity {
 
     @Column(name = "first_name")
     @NotNull
+    @Size(min = 2, max = 255)
+    @Pattern(regexp = "[A-Za-z]")
     private String firstName;
 
     @Column(name = "last_name")
     @NotNull
+    @Size(min = 2, max = 255)
+    @Pattern(regexp = "[A-Za-z]")
     private String lastName;
 
     public void addRole(Role role) {
