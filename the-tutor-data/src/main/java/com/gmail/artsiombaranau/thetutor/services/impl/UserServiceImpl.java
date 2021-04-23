@@ -36,8 +36,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
     public User save(User user) {
-        if (findByUsername(user.getUsername()) != null) {
+        if (existsByUsername(user.getUsername())) {
             throw new UserAlreadyExistsException("User with username: " + user.getUsername() + " already exists!");
         }
         return userRepository.save(user);
