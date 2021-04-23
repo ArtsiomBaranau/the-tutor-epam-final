@@ -3,7 +3,8 @@ package com.gmail.artsiombaranau.thetutor.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +28,13 @@ public class Question extends BaseEntity {
     }
 
     @Column(name = "description")
-    @NotNull
-    @Size(min = 5, max = 255)
+    @NotEmpty
+    @Size(min = 1, max = 255)
     private String description;
 
     @Singular
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "question")
+    @Valid
     private List<Answer> answers = new ArrayList<>();
 
     @ManyToOne //change to another cascade type! cascade = CascadeType.ALL

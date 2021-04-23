@@ -25,8 +25,8 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-default">Quiz name:</span>
             </div>
-            <input type="text" class="form-control" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" placeholder="Enter here quiz name..."
+            <input type="text" th:class="${#fields.hasErrors('name')}?'form-control is-invalid':'form-control'" aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default" placeholder='Enter here quiz name...'
                    th:field="*{name}">
         </div>
 
@@ -35,13 +35,15 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Quiz description:</span>
                 </div>
-                <textarea class="form-control" aria-label="With textarea" th:field="*{description}"></textarea>
+                <textarea th:class="${#fields.hasErrors('description')}?'form-control is-invalid':'form-control'" aria-label="With textarea" th:field="*{description}"
+                          placeholder='Enter here quiz description...'></textarea>
             </div>
 
             <div class="input-group col-md-2">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Specialty:</span>
                 </div>
+                <!--                problem is here!!!! if!!-->
                 <div th:if="*{specialty}">
                     <select class="form-control" th:field="*{specialty}">
                         <option th:each="specialty:${specialtiesList}" th:value="${specialty.id}"
@@ -62,10 +64,10 @@
                 </div>
                 <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].id}"/>
                 <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].quiz}"/>
-
-                <input type="text" class="form-control" aria-label="Sizing example input"
+                <input type="text" th:class="${#fields.hasErrors('*{questions[__${itemQuestion.index}__].description}')}?'form-control is-invalid':'form-control'" aria-label="Sizing example input"
                        aria-describedby="inputGroup-sizing-sm"
-                       th:field="*{questions[__${itemQuestion.index}__].description}">
+                       th:field="*{questions[__${itemQuestion.index}__].description}"
+                       placeholder='Enter here question...'>
             </div>
 
             <div th:each="answer,itemAnswer:*{questions[__${itemQuestion.index}__].answers}">
@@ -82,8 +84,9 @@
                                    th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].isRight}">
                         </div>
                     </div>
-                    <input type="text" class="form-control" aria-label="Text input with radio button"
-                           th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}">
+                    <input type="text" th:class="${#fields.hasErrors('*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}')}?'form-control is-invalid':'form-control'" aria-label="Text input with radio button"
+                           th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}"
+                           placeholder='Enter here answer...'>
                 </div>
             </div>
         </div>

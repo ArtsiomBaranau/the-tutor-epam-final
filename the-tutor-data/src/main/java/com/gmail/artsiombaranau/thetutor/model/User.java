@@ -3,7 +3,7 @@ package com.gmail.artsiombaranau.thetutor.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
@@ -31,9 +31,9 @@ public class User extends BaseEntity {
     }
 
     @Column(name = "username", unique = true)
-    @NotNull
+    @NotEmpty
     @Size(min = 3, max = 255)
-    @Pattern(regexp = "[A-Za-z0-9_]+")
+    @Pattern(regexp = "[A-Za-z0-9_-]+")
     private String username;
 
     @Transient
@@ -58,15 +58,15 @@ public class User extends BaseEntity {
     private Set<Role> roles = new HashSet<>();
 
     @Column(name = "first_name")
-    @NotNull
+    @NotEmpty
     @Size(min = 2, max = 255)
-    @Pattern(regexp = "[A-Za-z]")
+    @Pattern(regexp = "[A-Za-z]+")
     private String firstName;
 
     @Column(name = "last_name")
-    @NotNull
+    @NotEmpty
     @Size(min = 2, max = 255)
-    @Pattern(regexp = "[A-Za-z]")
+    @Pattern(regexp = "[A-Za-z]+")
     private String lastName;
 
     public void addRole(Role role) {

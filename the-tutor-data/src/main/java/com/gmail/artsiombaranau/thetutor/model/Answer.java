@@ -3,7 +3,7 @@ package com.gmail.artsiombaranau.thetutor.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Builder
@@ -25,8 +25,8 @@ public class Answer extends BaseEntity{
     }
 
     @Column(name = "description")
-    @NotNull
-    @Size(min = 5, max = 255)
+    @NotEmpty
+    @Size(min = 1, max = 255)
     private String description;
 
     @Column(name = "is_right", columnDefinition = "BOOLEAN DEFAULT FALSE")
