@@ -25,9 +25,10 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-default">Quiz name:</span>
             </div>
-            <input type="text" th:class="${#fields.hasErrors('name')}?'form-control is-invalid':'form-control'" aria-label="Sizing example input"
-                   aria-describedby="inputGroup-sizing-default" placeholder='Enter here quiz name...'
-                   th:field="*{name}">
+            <input type="text" th:class="${#fields.hasErrors('name')}?'form-control is-invalid':'form-control'"
+                   aria-label="Sizing example input"
+                   aria-describedby="inputGroup-sizing-default" placeholder="Enter here quiz name..."
+                   th:field="*{name}"/>
         </div>
 
         <div class="form-row">
@@ -35,8 +36,9 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Quiz description:</span>
                 </div>
-                <textarea th:class="${#fields.hasErrors('description')}?'form-control is-invalid':'form-control'" aria-label="With textarea" th:field="*{description}"
-                          placeholder='Enter here quiz description...'></textarea>
+                <textarea th:class="${#fields.hasErrors('description')}?'form-control is-invalid':'form-control'"
+                          aria-label="With textarea" th:field="*{description}"
+                          placeholder="Enter here quiz description..."></textarea>
             </div>
 
             <div class="input-group col-md-2">
@@ -64,10 +66,12 @@
                 </div>
                 <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].id}"/>
                 <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].quiz}"/>
-                <input type="text" th:class="${#fields.hasErrors('*{questions[__${itemQuestion.index}__].description}')}?'form-control is-invalid':'form-control'" aria-label="Sizing example input"
+                <input type="text"
+                       th:class="${#fields.hasErrors('*{questions[__${itemQuestion.index}__].description}')}?'form-control is-invalid':'form-control'"
+                       aria-label="Sizing example input"
                        aria-describedby="inputGroup-sizing-sm"
                        th:field="*{questions[__${itemQuestion.index}__].description}"
-                       placeholder='Enter here question...'>
+                       placeholder="Enter here question..."/>
             </div>
 
             <div th:each="answer,itemAnswer:*{questions[__${itemQuestion.index}__].answers}">
@@ -81,12 +85,14 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">
                             <input type="checkbox" aria-label="Checkbox for following text input"
-                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].isRight}">
+                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].isRight}"/>
                         </div>
                     </div>
-                    <input type="text" th:class="${#fields.hasErrors('*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}')}?'form-control is-invalid':'form-control'" aria-label="Text input with radio button"
+                    <input type="text"
+                           th:class="${#fields.hasErrors('*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}')}?'form-control is-invalid':'form-control'"
+                           aria-label="Text input with radio button"
                            th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}"
-                           placeholder='Enter here answer...'>
+                           placeholder="Enter here answer..."/>
                 </div>
             </div>
         </div>

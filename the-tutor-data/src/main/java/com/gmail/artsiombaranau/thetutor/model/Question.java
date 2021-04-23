@@ -37,7 +37,7 @@ public class Question extends BaseEntity {
     @Valid
     private List<Answer> answers = new ArrayList<>();
 
-    @ManyToOne //change to another cascade type! cascade = CascadeType.ALL
+    @ManyToOne
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 

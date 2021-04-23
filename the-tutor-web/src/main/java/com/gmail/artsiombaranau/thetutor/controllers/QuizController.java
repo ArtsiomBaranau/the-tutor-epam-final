@@ -49,14 +49,16 @@ public class QuizController {
     public String saveQuiz(@ModelAttribute @Valid Quiz quiz, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("quiz", quiz);
-            return CREATE_OR_UPDATE;
-        }
 
-        if (quiz != null) {
-            quiz.getQuestions().forEach(question -> {
-                question.setQuiz(quiz);
-                question.getAnswers().forEach(answer -> answer.setQuestion(question));
-            });
+            return CREATE_OR_UPDATE;
+        } else {
+            quiz.getQuestions()
+                    .forEach(question -> {
+                        question.setQuiz(quiz);
+                        question.getAnswers()
+                                .forEach(answer -> answer.setQuestion(question));
+                    });
+
             quizService.save(quiz);
         }
         return "index";
@@ -82,17 +84,15 @@ public class QuizController {
     public String saveUpdatedQuiz(@ModelAttribute @Valid Quiz quiz, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("quiz", quiz);
-            return CREATE_OR_UPDATE;
-        }
 
-        if (quiz != null && quiz.getId() != null) {
+            return CREATE_OR_UPDATE;
+        } else {
             Quiz updatedAndSavedQuiz = quizService.save(quiz);
             model.addAttribute("quiz", updatedAndSavedQuiz);
 
             return "quiz/show";
         }
         //add error to model and return error page
-        return null;
     }
 
     @GetMapping("/{id}")

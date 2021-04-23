@@ -32,7 +32,7 @@ public class Answer extends BaseEntity{
     @Column(name = "is_right", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isRight;
 
-    @ManyToOne //change to another cascade type! (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
 
