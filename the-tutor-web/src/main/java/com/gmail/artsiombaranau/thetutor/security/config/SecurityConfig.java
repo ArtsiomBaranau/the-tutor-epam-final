@@ -38,19 +38,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(requests ->
-                                requests.anyRequest().permitAll()
-//                                requests.antMatchers("/**").permitAll()
-
-//                        .mvcMatchers(HttpMethod.POST, "/**").permitAll()
-//                                        .anyRequest().authenticated()
+//                                requests.anyRequest().permitAll()
+                                requests
+                                        .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
+                                        .mvcMatchers(HttpMethod.GET, "/login").permitAll()
+                                        .mvcMatchers("/user/create").permitAll()
+                                        .mvcMatchers("/user/update").authenticated()
+                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}}").authenticated()
+                                        .mvcMatchers("/quiz/create").hasAnyRole("TUTOR", "ADMIN")
+                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update").hasAnyRole("TUTOR", "ADMIN")
+                                        .mvcMatchers(HttpMethod.POST, "/quiz/update").hasAnyRole("TUTOR", "ADMIN")
                 )
-//                .authorizeRequests()
-//                .anyRequest().authenticated()
-//                .and()
-                .formLogin()
-//                .loginPage("/login")
-                .and()
-                .httpBasic();
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and().formLogin().loginPage("/login")
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/index").invalidateHttpSession(true);
+//                .and().httpBasic();
     }
 
     @Bean
