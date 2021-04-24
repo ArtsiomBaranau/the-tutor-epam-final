@@ -11,12 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Slf4j
 @Controller
@@ -40,6 +38,36 @@ public class UserController {
 
     @PostMapping("/create") //add role!!!
     public String saveUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute(user);
+
+            return CREATE_OR_UPDATE;
+        } else if (userService.existsByUsername(user.getUsername())) {
+            model.addAttribute("error", "User with same username already exists!");
+            model.addAttribute(user);
+            //add error message to the user creation page!
+            return CREATE_OR_UPDATE;
+        } else {
+            user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
+            //set role to the user!
+            User savedUser = userService.save(user);
+            model.addAttribute("user", savedUser);
+
+            return "user/show";
+        }
+    }
+
+    @GetMapping("/update")
+    public String updateUserForm(Principal principal, Model model) {
+        User user = userService.findByUsername(principal.getName());
+
+        model.addAttribute("user", user);
+
+        return CREATE_OR_UPDATE;
+    }
+
+    @PostMapping("/update")
+    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()) {
             model.addAttribute(user);
 
