@@ -12,15 +12,20 @@
 </head>
 <body>
 <div class="navbar fixed-top navbar-light bg-dark" th:fragment="navbar">
-    <div sec:authorize="isAuthenticated()">
-        <h3 th:text="'Hi,'+ ${principal.username}+'!'">Hi, username!</h3>
+    <div class="float-left">
+<!--        add logo img! -->
+        <div sec:authorize="isAuthenticated()">
+            <h4 th:text="'Hi,'+ ${principal.username}+'!'">Hi, username!</h4>
+        </div>
     </div>
-    <a th:href="@{/login}" sec:authorize="!isAuthenticated()">
-        <button class="btn" th:text="LogIn">Button</button>
-    </a>
-    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
-        <button class="btn" th:text="LogOut">Button</button>
-    </a>
+    <div class="float-right">
+        <a th:href="@{/login}" sec:authorize="!isAuthenticated()">
+            <button class="btn" th:text="LogIn">Button</button>
+        </a>
+        <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
+            <button class="btn" th:text="LogOut">Button</button>
+        </a>
+    </div>
 </div>
 
 <footer class="footer fixed-bottom mt-auto py-3" th:fragment="footer">
