@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta charset="UTF-8">
@@ -7,16 +8,24 @@
     <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
 
-    <title>Header</title>
+    <title>Fragments</title>
 </head>
 <body>
-<div class="navbar" th:fragment="navbar">
-    Navigation Menu!
+<div class="navbar fixed-top navbar-light bg-dark" th:fragment="navbar">
+    <div sec:authorize="isAuthenticated()">
+        <h3 th:text="'Hi,'+ ${principal.username}+'!'">Hi, username!</h3>
+    </div>
+    <a th:href="@{/login}" sec:authorize="!isAuthenticated()">
+        <button class="btn" th:text="LogIn">Button</button>
+    </a>
+    <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
+        <button class="btn" th:text="LogOut">Button</button>
+    </a>
 </div>
 
-<footer class="footer mt-auto py-3" th:fragment="footer">
+<footer class="footer fixed-bottom mt-auto py-3" th:fragment="footer">
     <div class="container">
-        <span class="text-muted">Place sticky footer content here...</span>
+        <span class="text-muted">by Artsiom Baranau.</span>
     </div>
 </footer>
 
