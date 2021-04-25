@@ -4,6 +4,7 @@ import com.gmail.artsiombaranau.thetutor.model.*;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
 import com.gmail.artsiombaranau.thetutor.services.SpecialtyService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
+import com.gmail.artsiombaranau.thetutor.utils.QuizUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -29,12 +30,14 @@ public class QuizController {
     private final QuizService quizService;
     private final SpecialtyService specialtyService;
 
+    private final QuizUtils quizUtils;
+
     @GetMapping("/create")
     public String createQuizForm(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
 
         if (user != null) {
-            Quiz quiz = createEmptyQuiz(user);
+            Quiz quiz = quizUtils.createEmptyQuiz(user);
 
             model.addAttribute("quiz", quiz);
 
@@ -137,65 +140,5 @@ public class QuizController {
         //check results and return progressbar
 
         return PASS_QUIZ;
-    }
-
-    private Quiz createEmptyQuiz(User user) {
-        Quiz quiz = Quiz.builder().user(user).build();
-
-        Question questionOne = Question.builder().quiz(quiz).build();
-        List<Answer> answersQuestionOne = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            answersQuestionOne.add(Answer.builder().isRight(Boolean.FALSE).question(questionOne).build());
-        }
-        questionOne.setAnswers(answersQuestionOne);
-
-        Question questionTwo = Question.builder().quiz(quiz).build();
-        List<Answer> answersQuestionTwo = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            answersQuestionTwo.add(Answer.builder().isRight(Boolean.FALSE).question(questionTwo).build());
-        }
-        questionTwo.setAnswers(answersQuestionTwo);
-
-//        Question questionThree = Question.builder().build();
-//        List<Answer> answersQuestionThree = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            answersQuestionThree.add(Answer.builder().isRight(Boolean.FALSE).question(questionThree).build());
-//        }
-//        questionThree.setAnswers(answersQuestionThree);
-//
-//        Question questionFour = Question.builder().build();
-//        List<Answer> answersQuestionFour = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            answersQuestionFour.add(Answer.builder().isRight(Boolean.FALSE).question(questionFour).build());
-//        }
-//        questionFour.setAnswers(answersQuestionFour);
-//
-//        Question questionFive = Question.builder().build();
-//        List<Answer> answersQuestionFive = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            answersQuestionFive.add(Answer.builder().isRight(Boolean.FALSE).question(questionFive).build());
-//        }
-//        questionFive.setAnswers(answersQuestionFive);
-//
-//        Question questionSix = Question.builder().build();
-//        List<Answer> answersQuestionSix = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            answersQuestionSix.add(Answer.builder().isRight(Boolean.FALSE).question(questionSix).build());
-//        }
-//        questionSix.setAnswers(answersQuestionSix);
-//
-//        Question questionSeven = Question.builder().build();
-//        List<Answer> answersQuestionSeven = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            answersQuestionSeven.add(Answer.builder().isRight(Boolean.FALSE).question(questionSeven).build());
-//        }
-//        questionSeven.setAnswers(answersQuestionSeven);
-
-//        List<Question> questions = new ArrayList<>(List.of(questionOne, questionTwo, questionThree, questionFour, questionFive, questionSix, questionSeven));
-        List<Question> questions = new ArrayList<>(List.of(questionOne, questionTwo));
-
-        quiz.setQuestions(questions);
-
-        return quiz;
     }
 }
