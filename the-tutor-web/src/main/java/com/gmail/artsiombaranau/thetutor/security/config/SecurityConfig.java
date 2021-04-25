@@ -37,23 +37,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests(requests ->
 //                                requests.anyRequest().permitAll()
                                 requests
                                         .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
-                                        .mvcMatchers(HttpMethod.GET, "/login").permitAll()
-                                        .mvcMatchers("/user/create").permitAll()
-                                        .mvcMatchers("/user/update").authenticated()
-                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}}").authenticated()
-                                        .mvcMatchers("/quiz/create").hasAnyRole("TUTOR", "ADMIN")
-                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update").hasAnyRole("TUTOR", "ADMIN")
-                                        .mvcMatchers(HttpMethod.POST, "/quiz/update").hasAnyRole("TUTOR", "ADMIN")
+                                        .mvcMatchers("/login*").permitAll()
+                                        .mvcMatchers("/user/create*").permitAll()
+                                        .mvcMatchers("/user/update*").authenticated()
+                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}}*").authenticated()
+                                        .antMatchers("/quiz/create").hasAnyAuthority("TUTOR", "ADMIN")
+                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update*").hasAnyAuthority("TUTOR", "ADMIN")
+                                        .mvcMatchers(HttpMethod.POST, "/quiz/update*").hasAnyAuthority("TUTOR", "ADMIN")
                 )
                 .authorizeRequests()
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login")
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/index").invalidateHttpSession(true);
-//                .and().httpBasic();
+                .and().formLogin(formLogin ->
+                formLogin
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/")
+        )
+                .logout().logoutUrl("/logout*").logoutSuccessUrl("/").invalidateHttpSession(true)
+                .and().httpBasic().disable();
     }
 
     @Bean

@@ -52,6 +52,7 @@ public class UserController {
             //set role to the user!
             User savedUser = userService.save(user);
             model.addAttribute("user", savedUser);
+            //create and set principal
 
             return "user/show";
         }

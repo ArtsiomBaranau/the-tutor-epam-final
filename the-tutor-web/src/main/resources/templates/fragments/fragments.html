@@ -15,15 +15,15 @@
     <div class="float-left">
 <!--        add logo img! -->
         <div sec:authorize="isAuthenticated()">
-            <h4 th:text="'Hi,'+ ${principal.username}+'!'">Hi, username!</h4>
+<!--            <h4 th:text="'Hi,'+ ${principal.username}+'!'">Hi, username!</h4>-->
         </div>
     </div>
     <div class="float-right">
         <a th:href="@{/login}" sec:authorize="!isAuthenticated()">
-            <button class="btn" th:text="LogIn">Button</button>
+            <button class="btn btn-secondary" th:text="LogIn">Button</button>
         </a>
         <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
-            <button class="btn" th:text="LogOut">Button</button>
+            <button class="btn btn-secondary" th:text="LogOut">Button</button>
         </a>
     </div>
 </div>
