@@ -23,6 +23,7 @@ import java.util.List;
 public class QuizController {
 
     private static final String CREATE_OR_UPDATE = "quiz/create_or_update";
+    private static final String PASS_QUIZ = "quiz/pass";
 
     private final UserService userService;
     private final QuizService quizService;
@@ -30,19 +31,23 @@ public class QuizController {
 
     @GetMapping("/create")
     public String createQuizForm(Principal principal, Model model) {
-//        User user = userService.findByUsername(principal.getName());
-        User user = userService.findByUsername("tutor");
-//        if (user != null) {
-        Quiz quiz = createEmptyQuiz(user);
-        model.addAttribute("quiz", quiz);
+        User user = userService.findByUsername(principal.getName());
 
-        List<Specialty> specialties = specialtyService.findAll();
-        model.addAttribute("specialties", specialties);
+        if (user != null) {
+            Quiz quiz = createEmptyQuiz(user);
 
-//            return CREATE_OR_UPDATE;
-//        }
+            model.addAttribute("quiz", quiz);
 
-        return CREATE_OR_UPDATE;
+            List<Specialty> specialties = specialtyService.findAll();
+
+            model.addAttribute("specialties", specialties);
+
+            return CREATE_OR_UPDATE;
+        } else {
+            model.addAttribute("error", "Please, authorize yourself one more time!");
+
+            return "index";
+        }
     }
 
     @PostMapping("/create")
@@ -90,7 +95,7 @@ public class QuizController {
             Quiz updatedAndSavedQuiz = quizService.save(quiz);
             model.addAttribute("quiz", updatedAndSavedQuiz);
 
-            return "quiz/show";
+            return PASS_QUIZ;
         }
         //add error to model and return error page
     }
@@ -99,14 +104,39 @@ public class QuizController {
     public String getQuiz(@PathVariable Long id, Model model) {
         if (id != null) {
             Quiz quiz = quizService.findById(id);
+
             if (quiz != null) {
+                quiz.getQuestions().forEach(question -> {
+                    question.getAnswers().forEach(answer -> {
+                        answer.setIsRight(Boolean.FALSE);
+                    });
+                });
                 model.addAttribute(quiz);
 
-                return "quiz/show";
+                return PASS_QUIZ;
+            } else {
+                model.addAttribute("error", "Quiz with id: " + id + " doesn't exist!");
+                return "quiz/list"; //create page with list of quizzes
             }
         }
         //add error to model and return error page
         return null;
+    }
+
+    @PostMapping("/pass")
+    public String passQuiz(@ModelAttribute Quiz passedQuiz, Model model) {
+
+        Quiz originalQuiz = quizService.findById(passedQuiz.getId());
+
+        List<Answer> rightAnswers = new ArrayList<>();
+        originalQuiz.getQuestions().forEach(question -> rightAnswers.addAll(question.getAnswers()));
+
+        List<Answer> passedAnswers = new ArrayList<>();
+        passedQuiz.getQuestions().forEach(question -> passedAnswers.addAll(question.getAnswers()));
+
+        //check results and return progressbar
+
+        return PASS_QUIZ;
     }
 
     private Quiz createEmptyQuiz(User user) {
