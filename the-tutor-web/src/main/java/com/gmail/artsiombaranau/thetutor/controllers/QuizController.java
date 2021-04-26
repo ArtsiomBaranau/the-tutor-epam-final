@@ -141,4 +141,15 @@ public class QuizController {
 
         return PASS_QUIZ;
     }
+
+    @PostMapping("/{id}/delete")
+    public String deleteQuiz(@PathVariable Long id, Model model) {
+        if (id != null) {
+            quizService.deleteById(id);
+
+            return "menu";
+        }
+        //add error to model and return error page
+        return "menu";
+    }
 }
