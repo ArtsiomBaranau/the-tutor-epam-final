@@ -12,7 +12,9 @@
     </title>
 </head>
 <body>
-<h1 th:text="${(user.firstName)+' '(user.lastName)}"></h1>
+<div th:replace="fragments/fragments :: navbar"></div>
+
+<h1 class="text-center" th:text="${(user.firstName)+' '+(user.lastName)}">User Data...</h1>
 
 <div th:replace="fragments/fragments :: footer"></div>
 

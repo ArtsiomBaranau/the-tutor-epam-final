@@ -1,7 +1,5 @@
 package com.gmail.artsiombaranau.thetutor.controllers;
 
-import com.gmail.artsiombaranau.thetutor.enums.Roles;
-import com.gmail.artsiombaranau.thetutor.exceptions.UserAlreadyExistsException;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
@@ -23,11 +21,25 @@ import java.security.Principal;
 public class UserController {
 
     private static final String CREATE_OR_UPDATE = "user/create_or_update";
+    private static final String PROFILE = "user/profile";
 
     private final UserService userService;
     private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
+
+    @GetMapping("/{username}")
+    public String getUser(@PathVariable String username, Model model) {
+        User user = userService.findByUsername(username);
+
+        if (user != null) {
+            model.addAttribute("user", user);
+
+            return PROFILE;
+        } else {
+            return "menu";
+        }
+    }
 
     @GetMapping("/create")
     public String createUserForm(Model model) {
@@ -54,7 +66,7 @@ public class UserController {
             model.addAttribute("user", savedUser);
             //create and set principal
 
-            return "user/show";
+            return PROFILE;
         }
     }
 
@@ -68,7 +80,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model){
+    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute(user);
 
@@ -84,7 +96,7 @@ public class UserController {
             User savedUser = userService.save(user);
             model.addAttribute("user", savedUser);
 
-            return "user/show";
+            return PROFILE;
         }
     }
 }
