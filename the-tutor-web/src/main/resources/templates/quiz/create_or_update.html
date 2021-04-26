@@ -45,14 +45,19 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text">Specialty:</span>
                 </div>
-                <!--                problem is here!!!! if!!-->
+                <div th:if="${quiz['new']}">
+                    <select class="form-control" th:name="${quiz.specialty}">
+                        <option th:each="specialty,itemSpecialty:${specialtiesList}" th:value="${specialty.id}"
+                                th:text="${specialty.description}" th:selected="${itemSpecialty.count}==1">Specialty...
+                        </option>
+                    </select>
+                </div>
                 <div th:if="*{specialty}">
                     <select class="form-control" th:field="*{specialty}">
                         <option th:each="specialty:${specialtiesList}" th:value="${specialty.id}"
                                 th:text="${specialty.description}">Specialty...
                         </option>
                     </select>
-                    <!--                   find default selected value-->
                 </div>
             </div>
         </div>

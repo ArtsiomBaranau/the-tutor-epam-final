@@ -38,12 +38,10 @@ public class QuizController {
 
         if (user != null) {
             Quiz quiz = quizUtils.createEmptyQuiz(user);
-
             model.addAttribute("quiz", quiz);
 
             List<Specialty> specialties = specialtyService.findAll();
-
-            model.addAttribute("specialties", specialties);
+            model.addAttribute("specialtiesList", specialties);
 
             return CREATE_OR_UPDATE;
         } else {
