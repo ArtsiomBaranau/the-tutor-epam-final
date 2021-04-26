@@ -15,7 +15,7 @@
     <div class="float-left">
 <!--        add logo img! -->
         <div sec:authorize="isAuthenticated()">
-<!--            <h4 th:text="'Hi,'+ ${principal.username}+'!'">Hi, username!</h4>-->
+            <h4 th:text="'Hi,'+ ${#authentication.getName()}+'!'">Hi, username!</h4>
         </div>
     </div>
     <div class="float-right">
