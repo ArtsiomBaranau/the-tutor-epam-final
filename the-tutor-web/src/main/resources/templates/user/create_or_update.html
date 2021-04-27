@@ -25,7 +25,8 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon1">@</span>
             </div>
-            <input type="text" th:class="${#fields.hasErrors('username')}?'form-control is-invalid':'form-control'"
+            <input type="text"
+                   th:class="${#fields.hasErrors('username')}?'form-control is-invalid':'form-control'"
                    placeholder="Enter here username..."
                    aria-label="Username" aria-describedby="basic-addon1" th:field="*{username}">
         </div>
@@ -34,9 +35,26 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon2">**</span>
             </div>
-            <input type="password" th:class="${#fields.hasErrors('password')}?'form-control is-invalid':'form-control'"
+            <input type="password"
+                   th:class="${#fields.hasErrors('password')}?'form-control is-invalid':'form-control'"
                    placeholder="Enter here password..."
                    aria-label="Username" aria-describedby="basic-addon2" th:field="*{password}">
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Select role:</span>
+            </div>
+            <div th:if="${user['new']}">
+                <select class="form-control" th:field="*{roles}">
+                    <option th:each="role,itemRole:${rolesList}" th:value="${role.id}"
+                            th:text="${role.name}" th:selected="${itemRole.count}==1">Role...
+                    </option>
+                </select>
+            </div>
+            <div th:if="!${user['new']}">
+                <input type="hidden" th:field="*{roles}"/>
+            </div>
         </div>
 
         <div class="input-group mb-3">

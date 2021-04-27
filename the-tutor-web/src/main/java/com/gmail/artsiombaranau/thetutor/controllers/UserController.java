@@ -1,5 +1,7 @@
 package com.gmail.artsiombaranau.thetutor.controllers;
 
+import com.gmail.artsiombaranau.thetutor.enums.Roles;
+import com.gmail.artsiombaranau.thetutor.model.Role;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -43,12 +47,19 @@ public class UserController {
 
     @GetMapping("/create")
     public String createUserForm(Model model) {
-        model.addAttribute("user", new User());
+        User user = User.builder().build();
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleService.findByName(Roles.STUDENT));
+        roles.add(roleService.findByName(Roles.TUTOR));
+
+        model.addAttribute("user", user);
+        model.addAttribute("rolesList", roles);
 
         return CREATE_OR_UPDATE;
     }
 
-    @PostMapping("/create") //add role!!!
+    @PostMapping("/create")
     public String saveUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute(user);
@@ -61,8 +72,8 @@ public class UserController {
             return CREATE_OR_UPDATE;
         } else {
             user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
-            //set role to the user!
             User savedUser = userService.save(user);
+
             model.addAttribute("user", savedUser);
             //create and set principal
 
@@ -99,4 +110,24 @@ public class UserController {
             return PROFILE;
         }
     }
+
+    @PostMapping("/user/{id}/delete")
+    public String deleteUser(@PathVariable Long id, Principal principal, Model model) {
+        String principalName = principal.getName();
+
+        User userPrincipal = userService.findByUsername(principalName);
+        User userToDelete = userService.findById(id);
+
+        if (userPrincipal.getId().equals(userToDelete.getId())) {
+            userService.deleteById(id);
+
+            //do logout
+            return "index";
+        } else {
+            userService.deleteById(id);
+
+            return "menu";
+        }
+    }
+
 }

@@ -6,8 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -20,7 +20,7 @@ public class User extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    public User(Long id, String username, String password, String encryptedPassword, Set<Role> roles, String firstName, String lastName) {
+    public User(Long id, String username, String password, String encryptedPassword, List<Role> roles, String firstName, String lastName) {
         super(id);
         this.username = username;
         this.password = password;
@@ -51,11 +51,11 @@ public class User extends BaseEntity {
 //    private Set<Specialty> specialties = new HashSet<>();
 
     @Singular
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE) //do i need cascade type merge?
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles = new ArrayList<>();
 
     @Column(name = "first_name")
     @NotEmpty
