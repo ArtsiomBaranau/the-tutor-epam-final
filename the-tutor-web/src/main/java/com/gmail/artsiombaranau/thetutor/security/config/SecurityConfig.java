@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                         .mvcMatchers("/user/create*").permitAll()
                                         .mvcMatchers("/user/{username}*").authenticated()
                                         .mvcMatchers("/user/update*").authenticated()
+                                        .mvcMatchers("/user/{id}/delete*").authenticated()
                                         .mvcMatchers("/menu*").authenticated()
                                         .mvcMatchers(HttpMethod.GET, "/quiz/{id}}*").authenticated()
                                         .mvcMatchers(HttpMethod.POST, "/quiz/pass*").authenticated()

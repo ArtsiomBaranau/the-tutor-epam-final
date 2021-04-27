@@ -7,6 +7,7 @@ import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -112,19 +113,20 @@ public class UserController {
     }
 
     @PostMapping("/user/{id}/delete")
-    public String deleteUser(@PathVariable Long id, Principal principal, Model model) {
-        String principalName = principal.getName();
-
-        User userPrincipal = userService.findByUsername(principalName);
+    public String deleteUser(@PathVariable Long id, UserDetails userDetails, Model model) {
         User userToDelete = userService.findById(id);
 
-        if (userPrincipal.getId().equals(userToDelete.getId())) {
+        if (userDetails.getUsername().equals(userToDelete.getUsername())) {
             userService.deleteById(id);
 
             //do logout
             return "index";
-        } else {
+        } else if (userDetails.getAuthorities().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
+
+            return "menu";
+        } else {
+            model.addAttribute("error", "You have no rights for this operation!");
 
             return "menu";
         }
