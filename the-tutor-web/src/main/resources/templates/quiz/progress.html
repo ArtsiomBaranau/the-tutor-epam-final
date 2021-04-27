@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <title>
+        Quiz Progress
+    </title>
+</head>
+<body>
+<div class="container-fluid">
+    <div th:replace="fragments/fragments :: navbar"></div>
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Quiz results.</h1>
+        </div>
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" th:style="'width: '+${percentage}+'%;'"
+             th:aria-valuenow="${percentage}" th:aria-valuemin="0" aria-valuemax="100" th:text="${percentage}+'%'">25%
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card border-light mb-3" th:each="question,itemQuestion:${questionsMap}">
+        <div class="card-header" th:text="'Question '+${itemQuestion.count}+':'">Question:</div>
+        <div th:class="${question.value}?'card-body alert-success':'card-body alert-danger'">
+            <h5 class="card-title" th:text="${question.key.description}">Question description...</h5>
+        </div>
+    </div>
+
+    <div th:replace="fragments/fragments :: footer"></div>
+</div>
+
+<script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
+<script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

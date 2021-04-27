@@ -13,9 +13,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.Principal;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -126,18 +129,35 @@ public class QuizController {
 
     @PostMapping("/pass")
     public String passQuiz(@ModelAttribute Quiz passedQuiz, Model model) {
+        int questionsQuantity = passedQuiz.getQuestions().size();
+        int rightQuestionsQuantity = 0;
 
         Quiz originalQuiz = quizService.findById(passedQuiz.getId());
 
-        List<Answer> rightAnswers = new ArrayList<>();
-        originalQuiz.getQuestions().forEach(question -> rightAnswers.addAll(question.getAnswers()));
+        List<Question> passedQuestions = passedQuiz.getQuestions();
+        List<Question> originalQuestions = originalQuiz.getQuestions();
 
-        List<Answer> passedAnswers = new ArrayList<>();
-        passedQuiz.getQuestions().forEach(question -> passedAnswers.addAll(question.getAnswers()));
+        Map<Question, Boolean> questionsMap = new LinkedHashMap<>();
 
-        //check results and return progressbar
+        for (int i = 0; i < questionsQuantity; i++) {
+            Question originalQuestion = originalQuestions.get(i);
+            Question passedQuestion = passedQuestions.get(i);
+            if (passedQuestion.getAnswers().equals(originalQuestion.getAnswers())) {
+                questionsMap.put(originalQuestion, Boolean.TRUE);
+                rightQuestionsQuantity++;
+            } else {
+                questionsMap.put(originalQuestion, Boolean.FALSE);
+            }
+        }
 
-        return PASS_QUIZ;
+        BigDecimal percentage = new BigDecimal(rightQuestionsQuantity);
+
+        percentage = percentage.multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(questionsQuantity), RoundingMode.HALF_UP);
+
+        model.addAttribute("percentage", percentage);
+        model.addAttribute("questionsMap", questionsMap);
+
+        return "quiz/progress";
     }
 
     @PostMapping("/{id}/delete")
