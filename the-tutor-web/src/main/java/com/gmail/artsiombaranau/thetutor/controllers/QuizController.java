@@ -72,7 +72,7 @@ public class QuizController {
 
     @GetMapping("/{id}/update")
     public String updateQuizForm(@PathVariable Long id, Model model) {
-        Quiz quiz = quizService.findById(id); //do with is exists in repo
+        Quiz quiz = quizService.findById(id);
 
         List<Specialty> specialties = specialtyService.findAll();
 
