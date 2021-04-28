@@ -70,15 +70,24 @@ public class UserController {
             boolean existByUsername = userService.existsByUsername(user.getUsername());
             boolean existByEmail = userService.existsByEmail(user.getEmail());
 
-            if (existByUsername) {
-                String message = user.getUsername() + " already exists!";
-                bindingResult.addError(new FieldError("user", "username", message));
+            if (existByUsername && existByEmail) {
+                String messageUsername = user.getUsername() + " already exists!";
+                bindingResult.addError(new FieldError("user", "username", messageUsername));
+
+                String messageEmail = user.getEmail() + " already exists!";
+                bindingResult.addError(new FieldError("user", "email", messageEmail));
 
                 model.addAttribute("user", user);
                 return CREATE_OR_UPDATE;
-            } else if (existByEmail) {
+            } else if (!existByUsername && existByEmail) {
                 String message = user.getEmail() + " already exists!";
                 bindingResult.addError(new FieldError("user", "email", message));
+
+                model.addAttribute("user", user);
+                return CREATE_OR_UPDATE;
+            } else if (existByUsername && !existByEmail) {
+                String messageUsername = user.getUsername() + " already exists!";
+                bindingResult.addError(new FieldError("user", "username", messageUsername));
 
                 model.addAttribute("user", user);
                 return CREATE_OR_UPDATE;
