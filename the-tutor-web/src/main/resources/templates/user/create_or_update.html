@@ -15,7 +15,7 @@
 <div class="container-fluid">
     <div th:replace="fragments/fragments :: navbar"></div>
 
-    <form class="form-group" th:object="${user}" th:with="link=${user['new']} ? '/user/create' : '/user/update'"
+    <form class="form-group" th:object="${user}" th:with="link=${user['new']} ? '/register' : '/user/update'"
           th:action="@{${link}}" method="post">
 
         <input type="hidden" th:field="*{id}"/>

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -37,13 +38,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeRequests(requests ->
 //                                requests.anyRequest().permitAll()
                                 requests
                                         .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
                                         .mvcMatchers("/login*").permitAll()
-                                        .mvcMatchers("/user/create*").permitAll()
+                                        .mvcMatchers("/register*").permitAll()
                                         .mvcMatchers("/user/{username}*").authenticated()
                                         .mvcMatchers("/user/update*").authenticated()
                                         .mvcMatchers("/user/{id}/delete*").authenticated()
@@ -63,12 +63,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")
         )
-                .logout().logoutUrl("/logout*").logoutSuccessUrl("/").invalidateHttpSession(true)
-                .and().httpBasic().disable();
+                .logout().logoutUrl("/logout*").logoutSuccessUrl("/").invalidateHttpSession(true);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return this.authenticationManager();
     }
 }
