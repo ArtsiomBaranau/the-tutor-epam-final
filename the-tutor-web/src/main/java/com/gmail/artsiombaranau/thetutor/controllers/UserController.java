@@ -39,7 +39,7 @@ public class UserController {
 
             return PROFILE;
         } else {
-            return "menu";
+            return "redirect:/menu";
         }
     }
 
@@ -93,11 +93,11 @@ public class UserController {
         } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
 
-            return "menu";
+            return "redirect:/menu";
         } else {
             model.addAttribute("error", "You have no rights for this operation!");
 
-            return "menu";
+            return "redirect:/menu";
         }
     }
 

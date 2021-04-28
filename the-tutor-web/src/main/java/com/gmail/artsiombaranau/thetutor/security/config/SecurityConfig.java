@@ -38,12 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests(requests ->
 //                                requests.anyRequest().permitAll()
                                 requests
                                         .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
                                         .mvcMatchers("/login*").permitAll()
                                         .mvcMatchers("/register*").permitAll()
+                                        .mvcMatchers("/logout*").authenticated()
                                         .mvcMatchers("/user/{username}*").authenticated()
                                         .mvcMatchers("/user/update*").authenticated()
                                         .mvcMatchers("/user/{id}/delete*").authenticated()
@@ -63,7 +65,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")
         )
-                .logout().logoutUrl("/logout*").logoutSuccessUrl("/").invalidateHttpSession(true);
+                .logout(logout -> logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .clearAuthentication(true)
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID")
+                );
     }
 
     @Bean
