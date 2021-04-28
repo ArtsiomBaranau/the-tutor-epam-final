@@ -7,6 +7,8 @@ import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,6 +32,8 @@ public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;
+
+    private final JavaMailSender javaMailSender;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -98,6 +102,14 @@ public class UserController {
                 model.addAttribute("user", savedUser);
 
                 //create and set principal
+
+                SimpleMailMessage emailMessage = new SimpleMailMessage();
+                emailMessage.setFrom("the.tutor.application@gmail.com");
+                emailMessage.setTo(savedUser.getEmail());
+                emailMessage.setSubject("Registration on theTutor App");
+                emailMessage.setText("Thanks for registration!");
+
+                javaMailSender.send(emailMessage);
 
                 return PROFILE;
             }
