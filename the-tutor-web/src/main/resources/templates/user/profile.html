@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">>
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta charset="UTF-8">
@@ -11,67 +11,82 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <title>
-        User Info
+        User Profile
     </title>
 </head>
 <body>
-<div th:replace="fragments/fragments :: navbar"></div>
+<div class="container-fluid">
+    <div th:replace="fragments/fragments :: navbar"></div>
 
-<!-- Breadcrumb -->
-<!--        <nav aria-label="breadcrumb" class="main-breadcrumb">-->
-<!--            <ol class="breadcrumb">-->
-<!--                <li class="breadcrumb-item"><a href="index.html">Home</a></li>-->
-<!--                <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>-->
-<!--                <li class="breadcrumb-item active" aria-current="page">User Profile</li>-->
-<!--            </ol>-->
-<!--        </nav>-->
-<!-- /Breadcrumb -->
+    <!-- Breadcrumb -->
+    <!--        <nav aria-label="breadcrumb" class="main-breadcrumb">-->
+    <!--            <ol class="breadcrumb">-->
+    <!--                <li class="breadcrumb-item"><a href="index.html">Home</a></li>-->
+    <!--                <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>-->
+    <!--                <li class="breadcrumb-item active" aria-current="page">User Profile</li>-->
+    <!--            </ol>-->
+    <!--        </nav>-->
+    <!-- /Breadcrumb -->
 
-<div class="card border-light mb-3">
-    <div class="card-header">
-        <div class="float-left" th:text="'@'+${user.username}+' User Profile.'">User Profile.</div>
-        <div class="row float-right">
-            <div th:if="${#authentication.getName()}!=${user.username}" sec:authorize="hasAuthority('ADMIN')">
-                <a th:href="@{/user/{id}/delete(id=${user.id})}">
-                    <button class="btn-dark">
-                        <i class="fas fa-trash fa-lg"></i>
-                    </button>
-                </a>
+    <div class="card border-light mb-3">
+        <div class="card-header">
+            <div class="float-left" th:text="'@'+${user.username}+' User Profile.'">User Profile.</div>
+            <div class="row float-right">
+                <div th:if="${#authentication.getName()}!=${user.username}" sec:authorize="hasAuthority('ADMIN')">
+                    <a th:href="@{/user/{id}/delete(id=${user.id})}">
+                        <button class="btn-dark">
+                            <i class="fas fa-trash fa-lg"></i>
+                        </button>
+                    </a>
+                </div>
+                <div th:if="${#authentication.getName()}==${user.username}"
+                     sec:authorize="isAuthenticated()">
+                    <a th:href="@{/user/update}">
+                        <button class="btn-dark">
+                            <i class="far fa-edit fa-lg"></i>
+                        </button>
+                    </a>
+                    <a th:href="@{/user/{id}/delete(id=${user.id})}">
+                        <button class="btn-dark">
+                            <i class="fas fa-trash fa-lg"></i>
+                        </button>
+                    </a>
+                </div>
             </div>
-            <div th:if="${#authentication.getName()}==${user.username}"
-                 sec:authorize="isAuthenticated()">
-                <a th:href="@{/user/update}">
-                    <button class="btn-dark">
-                        <i class="far fa-edit fa-lg"></i>
-                    </button>
-                </a>
-                <a th:href="@{/user/{id}/delete(id=${user.id})}">
-                    <button class="btn-dark">
-                        <i class="fas fa-trash fa-lg"></i>
-                    </button>
-                </a>
+        </div>
+        <div class="card-body">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                </div>
+                <h5 class="input-group-text badge-light" th:text="${user.username}">Username.</h5>
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" th:text="${#lists.size(user.roles)}>1?'Roles:':'Role:'">Role:</span>
+                </div>
+                <p class="input-group-text badge-light">
+                    <strong th:each="role,itemRole:${user.roles}">
+                        <i th:text="${#lists.size(user.roles)>itemRole.count}?${user.roles[__${itemRole.index}__].name}+',&nbsp;':${user.roles[__${itemRole.index}__].name}">
+                            Role.
+                        </i>
+                    </strong>
+                </p>
+            </div>
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">First and Last name:</span>
+                </div>
+                <h5 class="input-group-text badge-light" th:text="${user.firstName}">First Name.</h5>
+                <h5 class="input-group-text badge-light" th:text="${user.lastName}">Last Name.</h5>
             </div>
         </div>
     </div>
-    <div class="card-body">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">@</span>
-            </div>
-            <h5 class="input-group-text badge-light" th:text="${user.username}">Username.</h5>
-        </div>
 
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text">First and Last name:</span>
-            </div>
-            <h5 class="input-group-text badge-light" th:text="${user.firstName}">First Name.</h5>
-            <h5 class="input-group-text badge-light" th:text="${user.lastName}">Last Name.</h5>
-        </div>
-    </div>
+    <div th:replace="fragments/fragments :: footer"></div>
 </div>
-
-<div th:replace="fragments/fragments :: footer"></div>
 
 <script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
 <script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>

@@ -27,7 +27,7 @@
             </div>
             <input type="text"
                    th:class="${#fields.hasErrors('username')}?'form-control is-invalid':'form-control'"
-                   placeholder="Enter here username..."
+                   th:placeholder="${#fields.hasErrors('username')}?${#fields.errors('username').get(0)}:'Enter here username...'"
                    aria-label="Username" aria-describedby="basic-addon1" th:field="*{username}">
         </div>
 
@@ -37,13 +37,13 @@
             </div>
             <input type="password"
                    th:class="${#fields.hasErrors('password')}?'form-control is-invalid':'form-control'"
-                   placeholder="Enter here password..."
+                   th:placeholder="${user['new']}?'Enter here password...':'Enter here new password...'"
                    aria-label="Username" aria-describedby="basic-addon2" th:field="*{password}">
         </div>
 
         <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text">Select role:</span>
+                <span class="input-group-text" th:text="${user['new']}?'Select role:':'Role:'">Select role:</span>
             </div>
             <div th:if="${user['new']}">
                 <select class="form-control" th:field="*{roles}">
@@ -54,6 +54,13 @@
             </div>
             <div th:if="!${user['new']}">
                 <input type="hidden" th:field="*{roles}"/>
+                <p class="input-group-text badge-light">
+                    <strong th:each="role,itemRole:*{roles}">
+                        <i th:text="${#lists.size(user.roles)>itemRole.count}?*{roles[__${itemRole.index}__].name}+',&nbsp;':*{roles[__${itemRole.index}__].name}">
+                            Role.
+                        </i>
+                    </strong>
+                </p>
             </div>
         </div>
 

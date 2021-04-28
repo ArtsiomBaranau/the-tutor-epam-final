@@ -24,6 +24,9 @@
         <a th:href="@{/login}" sec:authorize="!isAuthenticated()">
             <button class="btn btn-secondary" th:text="LogIn">Button</button>
         </a>
+        <a th:href="@{/menu}" sec:authorize="isAuthenticated()">
+            <button class="btn btn-secondary" th:text="Menu">Button</button>
+        </a>
         <a th:href="@{/logout}" sec:authorize="isAuthenticated()">
             <button class="btn btn-secondary" th:text="LogOut">Button</button>
         </a>
