@@ -52,6 +52,7 @@ public class DataInitializer implements CommandLineRunner {
 
         User adminUser = User.builder()
                 .username("admin")
+                .email("admin@gmail.com")
                 .password("admin")
                 .encryptedPassword(passwordEncoder.encode("admin"))
                 .role(tutorRole)
@@ -64,6 +65,7 @@ public class DataInitializer implements CommandLineRunner {
 
         User tutorUser = User.builder()
                 .username("tutor")
+                .email("tutor@gmail.com")
                 .password("tutor")
                 .encryptedPassword(passwordEncoder.encode("tutor"))
                 .role(tutorRole)
@@ -75,6 +77,7 @@ public class DataInitializer implements CommandLineRunner {
 
         User studentUser = User.builder()
                 .username("student")
+                .email("student@gmail.com")
                 .password("student")
                 .encryptedPassword(passwordEncoder.encode("student"))
                 .role(studentRole)

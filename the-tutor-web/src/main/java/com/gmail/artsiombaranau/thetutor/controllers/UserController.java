@@ -7,7 +7,6 @@ import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,21 +66,32 @@ public class UserController {
             model.addAttribute(user);
 
             return CREATE_OR_UPDATE;
-        } else if (userService.existsByUsername(user.getUsername())) {
-            String message = user.getUsername() + " already exists!";
-            bindingResult.addError(new FieldError("user", "username", message));
-
-            model.addAttribute("user", user);
-            return CREATE_OR_UPDATE;
         } else {
-            user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
-            User savedUser = userService.save(user);
+            boolean existByUsername = userService.existsByUsername(user.getUsername());
+            boolean existByEmail = userService.existsByEmail(user.getEmail());
 
-            model.addAttribute("user", savedUser);
+            if (existByUsername) {
+                String message = user.getUsername() + " already exists!";
+                bindingResult.addError(new FieldError("user", "username", message));
 
-            //create and set principal
+                model.addAttribute("user", user);
+                return CREATE_OR_UPDATE;
+            } else if (existByEmail) {
+                String message = user.getEmail() + " already exists!";
+                bindingResult.addError(new FieldError("user", "email", message));
 
-            return PROFILE;
+                model.addAttribute("user", user);
+                return CREATE_OR_UPDATE;
+            } else {
+                user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
+                User savedUser = userService.save(user);
+
+                model.addAttribute("user", savedUser);
+
+                //create and set principal
+
+                return PROFILE;
+            }
         }
     }
 
@@ -95,25 +105,30 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String saveUpdatedUser(@ModelAttribute @Valid User user, Principal principal, BindingResult bindingResult, Model model) {
+    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Principal principal, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute(user);
 
             return CREATE_OR_UPDATE;
-        } else if (userService.existsByUsername(user.getUsername()) && !user.getUsername().equals(principal.getName())) {
-            String message = user.getUsername() + " already exists!";
-            bindingResult.addError(new FieldError("user", "username", message));
-
-            model.addAttribute(user);
-
-            return CREATE_OR_UPDATE;
         } else {
-            user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
-            User savedUser = userService.save(user);
+            boolean existByUsername = userService.existsByUsername(user.getUsername());
+            boolean isUsernameEqualsPrincipalName = user.getUsername().equals(principal.getName());
 
-            model.addAttribute("user", savedUser);
+            if (existByUsername && !isUsernameEqualsPrincipalName) { //add a check for existence by email
+                String message = user.getUsername() + " already exists!";
+                bindingResult.addError(new FieldError("user", "username", message));
 
-            return PROFILE;
+                model.addAttribute(user);
+
+                return CREATE_OR_UPDATE;
+            } else {
+                user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
+                User savedUser = userService.save(user);
+
+                model.addAttribute("user", savedUser);
+
+                return PROFILE;
+            }
         }
     }
 

@@ -41,6 +41,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
     public User save(User user) {
         if (existsByUsername(user.getUsername())) {
             throw new UserAlreadyExistsException("User with username: " + user.getUsername() + " already exists!");

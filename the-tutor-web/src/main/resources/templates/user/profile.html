@@ -63,6 +63,13 @@
             </div>
 
             <div class="input-group mb-3">
+                <h5 class="input-group-text badge-light" th:text="${user.email}">Email.</h5>
+                <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">@email.example</span>
+                </div>
+            </div>
+
+            <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" th:text="${#lists.size(user.roles)}>1?'Roles:':'Role:'">Role:</span>
                 </div>

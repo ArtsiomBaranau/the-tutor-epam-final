@@ -32,8 +32,18 @@
         </div>
 
         <div class="input-group mb-3">
+            <input type="text"
+                   th:class="${#fields.hasErrors('email')}?'form-control is-invalid':'form-control'"
+                   th:placeholder="${#fields.hasErrors('email')}?${#fields.errors('email').get(0)}:'Enter here email...'"
+                   aria-label="Email" aria-describedby="basic-addon2" th:field="*{email}">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2">@email.example</span>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon2">**</span>
+                <span class="input-group-text" id="basic-addon3">**</span>
             </div>
             <input type="password"
                    th:class="${#fields.hasErrors('password')}?'form-control is-invalid':'form-control'"
