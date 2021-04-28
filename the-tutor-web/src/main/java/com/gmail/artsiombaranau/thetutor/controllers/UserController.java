@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -67,15 +68,17 @@ public class UserController {
 
             return CREATE_OR_UPDATE;
         } else if (userService.existsByUsername(user.getUsername())) {
-            model.addAttribute("error", "User with same username already exists!");
-            model.addAttribute(user);
-            //add error message to the user creation page!
+            String message = user.getUsername() + " already exists!";
+            bindingResult.addError(new FieldError("user", "username", message));
+
+            model.addAttribute("user", user);
             return CREATE_OR_UPDATE;
         } else {
             user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
             User savedUser = userService.save(user);
 
             model.addAttribute("user", savedUser);
+
             //create and set principal
 
             return PROFILE;
@@ -92,20 +95,22 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
+    public String saveUpdatedUser(@ModelAttribute @Valid User user, Principal principal, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute(user);
 
             return CREATE_OR_UPDATE;
-        } else if (userService.existsByUsername(user.getUsername())) {
-            model.addAttribute("error", "User with same username already exists!");
+        } else if (userService.existsByUsername(user.getUsername()) && !user.getUsername().equals(principal.getName())) {
+            String message = user.getUsername() + " already exists!";
+            bindingResult.addError(new FieldError("user", "username", message));
+
             model.addAttribute(user);
-            //add error message to the user creation page!
+
             return CREATE_OR_UPDATE;
         } else {
             user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
-            //set role to the user!
             User savedUser = userService.save(user);
+
             model.addAttribute("user", savedUser);
 
             return PROFILE;
@@ -113,15 +118,16 @@ public class UserController {
     }
 
     @PostMapping("/user/{id}/delete")
-    public String deleteUser(@PathVariable Long id, UserDetails userDetails, Model model) {
+    public String deleteUser(@PathVariable Long id, Principal principal, Model model) {
+        User userPrincipal = userService.findByUsername(principal.getName());
         User userToDelete = userService.findById(id);
 
-        if (userDetails.getUsername().equals(userToDelete.getUsername())) {
+        if (principal.getName().equals(userToDelete.getUsername())) {
             userService.deleteById(id);
 
             //do logout
             return "index";
-        } else if (userDetails.getAuthorities().contains(roleService.findByName(Roles.ADMIN))) {
+        } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
 
             return "menu";

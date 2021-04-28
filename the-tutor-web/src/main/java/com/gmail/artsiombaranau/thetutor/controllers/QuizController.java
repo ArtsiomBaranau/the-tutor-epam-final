@@ -142,8 +142,10 @@ public class QuizController {
         for (int i = 0; i < questionsQuantity; i++) {
             Question originalQuestion = originalQuestions.get(i);
             Question passedQuestion = passedQuestions.get(i);
+
             if (passedQuestion.getAnswers().equals(originalQuestion.getAnswers())) {
                 questionsMap.put(originalQuestion, Boolean.TRUE);
+
                 rightQuestionsQuantity++;
             } else {
                 questionsMap.put(originalQuestion, Boolean.FALSE);
