@@ -12,19 +12,23 @@
 </head>
 
 <body>
-<div class="container-fluid">
-    <div th:replace="fragments/fragments :: navbar"></div>
 
-    <div class="sidenav">
-        <div class="login-main-text">
-            <h1 th:text="#{app.name}">Application</h1>
+<div th:replace="fragments/fragments :: navbar"></div>
+
+<div class="container-fluid">
+    <div class="row vh-100">
+        <div class="col-2 w-100" style="background-color: #4e555b">
+            <div class="left-side-main-text">
+                <h1 th:text="#{app.name}">Application</h1>
+                <h3>Hello!</h3>
+                <p>Do you want to be the best?</p>
+            </div>
         </div>
-    </div>
-    <div class="main">
-        <div class="col-md-6 col-sm-12">
-            <div class="align-items-center">
+
+        <div class="col">
+            <div class="row h-100 justify-content-center align-items-center">
                 <a th:href="@{/menu}">
-                    <button class="btn-dark" th:text="Start">Start!</button>
+                    <button class="btn-lg btn-dark">Let's start!</button>
                 </a>
             </div>
         </div>

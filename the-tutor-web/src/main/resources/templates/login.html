@@ -13,16 +13,16 @@
 
 <body>
 <div class="container-fluid">
-    <div class="sidenav">
-        <div class="login-main-text">
-            <h1 th:text="#{app.name}">Application</h1>
-            <h3>Login Page</h3>
-            <p>Login or register for full access...</p>
+    <div class="row vh-100">
+        <div class="col-4 w-100" style="background-color: #4e555b">
+            <div class="left-side-main-text">
+                <h1 th:text="#{app.name}">Application</h1>
+                <h3>Login Page</h3>
+                <p>Login or register for full access...</p>
+            </div>
         </div>
-    </div>
-    <div class="main">
-        <div class="col-md-6 col-sm-12">
-            <div class="login-form">
+        <div class="col-8">
+            <div style="width:30%; margin-top: 30%">
                 <form th:action="@{/login}" method="post">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">

@@ -138,6 +138,8 @@ public class RegisterController {
 
                 javaMailSender.send(emailMessage);
 
+                log.info("User: {} just registered!", savedUser.getUsername());
+
                 return "redirect:/menu";
             }
         }
