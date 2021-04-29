@@ -63,7 +63,12 @@ public class RegisterController {
     @PostMapping
     public String doRegister(@ModelAttribute @Valid User user, BindingResult bindingResult, HttpServletRequest httpRequest, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute(user);
+            List<Role> roles = new ArrayList<>();
+            roles.add(roleService.findByName(Roles.STUDENT));
+            roles.add(roleService.findByName(Roles.TUTOR));
+
+            model.addAttribute("user", user);
+            model.addAttribute("rolesList", roles);
 
             return CREATE_OR_UPDATE;
         } else {

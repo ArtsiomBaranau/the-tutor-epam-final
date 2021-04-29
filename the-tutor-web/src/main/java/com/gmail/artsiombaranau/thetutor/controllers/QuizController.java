@@ -57,6 +57,9 @@ public class QuizController {
     @PostMapping("/create")
     public String saveQuiz(@ModelAttribute @Valid Quiz quiz, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            List<Specialty> specialties = specialtyService.findAll();
+
+            model.addAttribute("specialtiesList", specialties);
             model.addAttribute("quiz", quiz);
 
             return CREATE_OR_UPDATE;
@@ -92,6 +95,9 @@ public class QuizController {
     @PostMapping("/update")
     public String saveUpdatedQuiz(@ModelAttribute @Valid Quiz quiz, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
+            List<Specialty> specialties = specialtyService.findAll();
+
+            model.addAttribute("specialtiesList", specialties);
             model.addAttribute("quiz", quiz);
 
             return CREATE_OR_UPDATE;
