@@ -133,7 +133,7 @@ public class RegisterController {
 
                 emailMessage.setFrom("the.tutor.application@gmail.com");
                 emailMessage.setTo(savedUser.getEmail());
-                emailMessage.setSubject("Registration on theTutor App");
+                emailMessage.setSubject("Registration in theTutor App");
                 emailMessage.setText("Thanks for registration!");
 
                 javaMailSender.send(emailMessage);

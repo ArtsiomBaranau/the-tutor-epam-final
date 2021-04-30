@@ -143,19 +143,39 @@ public class QuizController {
         List<Question> passedQuestions = passedQuiz.getQuestions();
         List<Question> originalQuestions = originalQuiz.getQuestions();
 
-        Map<Question, Boolean> questionsMap = new LinkedHashMap<>();
+        Map<Question, Map<Answer, Boolean>> questionsMap = new LinkedHashMap<>();
 
-        for (int i = 0; i < questionsQuantity; i++) {
-            Question originalQuestion = originalQuestions.get(i);
-            Question passedQuestion = passedQuestions.get(i);
+        for (int itemQuestion = 0; itemQuestion < questionsQuantity; itemQuestion++) {
+            Question originalQuestion = originalQuestions.get(itemQuestion);
+            Question passedQuestion = passedQuestions.get(itemQuestion);
 
-            if (passedQuestion.getAnswers().equals(originalQuestion.getAnswers())) {
-                questionsMap.put(originalQuestion, Boolean.TRUE);
+            Map<Answer, Boolean> answersMap = new LinkedHashMap<>();
 
+            List<Answer> originalAnswers = originalQuestion.getAnswers();
+            List<Answer> passedAnswers = passedQuestion.getAnswers();
+
+            if (passedAnswers.equals(originalAnswers)) {
                 rightQuestionsQuantity++;
-            } else {
-                questionsMap.put(originalQuestion, Boolean.FALSE);
             }
+
+            for (int itemAnswer = 0; itemAnswer < 4; itemAnswer++) {
+                Answer originalAnswer = originalAnswers.get(itemAnswer);
+                Answer passedAnswer = passedAnswers.get(itemAnswer);
+
+                boolean isRightOriginalAnswer = originalAnswer.getIsRight();
+                boolean isRightPassedAnswer = passedAnswer.getIsRight();
+
+                if (isRightOriginalAnswer && isRightPassedAnswer) {
+                    answersMap.put(originalAnswer, Boolean.TRUE);
+                } else if (isRightOriginalAnswer && !isRightPassedAnswer) {
+                    answersMap.put(originalAnswer, Boolean.TRUE);
+                } else if (!isRightOriginalAnswer && !isRightPassedAnswer) {
+                    answersMap.put(originalAnswer, null);
+                } else if (!isRightOriginalAnswer && isRightPassedAnswer) {
+                    answersMap.put(originalAnswer, Boolean.FALSE);
+                }
+            }
+            questionsMap.put(originalQuestion, answersMap);
         }
 
         BigDecimal percentage = new BigDecimal(rightQuestionsQuantity);

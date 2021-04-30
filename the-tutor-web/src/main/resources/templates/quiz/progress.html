@@ -31,15 +31,42 @@
 
     <br>
 
-    <div class="card border-light mb-3" th:each="question,itemQuestion:${questionsMap}">
+    <div class="card border-light mb-3" th:each="questionEntry,itemQuestion:${questionsMap}">
         <div class="card-header" th:text="'Question '+${itemQuestion.count}+':'">Question:</div>
-        <div th:class="${question.value}?'card-body alert-success':'card-body alert-danger'">
-            <h5 class="card-title" th:text="${question.key.description}">Question description...</h5>
+        <div class="card-body">
+            <h5 class="card-title" th:text="${questionEntry.key.description}">Some question
+                description...</h5>
+            <ul class="card-text list-group list-group-flush">
+                <li class="list-group-item"
+                    th:each="answerEntry,itemAnswer:*{questionEntry.value}">
+                    <div class="input-group w-75 offset-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1"
+                                          th:text="*{itemAnswer.count +'.'}">№</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:switch="*{answerEntry.value}">
+                            <div th:case="null" class="alert alert-warning" th:text="*{answerEntry.key.description}">
+                                Answer...
+                            </div>
+                            <div th:case="false" class="alert alert-danger" th:text="*{answerEntry.key.description}">
+                                Answer...
+                            </div>
+                            <div th:case="true" class="alert alert-success" th:text="*{answerEntry.key.description}">
+                                Answer...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
-
-    <div th:replace="fragments/fragments :: footer"></div>
 </div>
+
+<div th:replace="fragments/fragments :: footer"></div>
 
 <script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
 <script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
