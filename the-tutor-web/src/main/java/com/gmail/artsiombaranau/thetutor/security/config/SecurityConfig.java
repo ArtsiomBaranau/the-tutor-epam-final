@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                         .mvcMatchers("/logout*").authenticated()
                                         .mvcMatchers("/user/{username}*").authenticated()
                                         .mvcMatchers("/user/update*").authenticated()
-                                        .mvcMatchers("/user/{id}/delete*").authenticated()
+                                        .mvcMatchers(HttpMethod.GET, "/user/{id}/delete*").authenticated()
                                         .mvcMatchers("/menu*").authenticated()
                                         .mvcMatchers(HttpMethod.GET, "/quiz/{id}}*").authenticated()
                                         .mvcMatchers(HttpMethod.POST, "/quiz/pass*").authenticated()
@@ -64,13 +64,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")
+						.failureForwardUrl("/login?failure=true") //add to login page check 
         )
                 .logout(logout -> logout
-                                .logoutUrl("/logout")
-                                .logoutSuccessUrl("/")
-                                .clearAuthentication(true)
-                                .invalidateHttpSession(true)
-                                .deleteCookies("JSESSIONID")
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 );
     }
 

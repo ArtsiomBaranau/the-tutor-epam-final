@@ -1,6 +1,5 @@
 package com.gmail.artsiombaranau.thetutor.services.impl;
 
-import com.gmail.artsiombaranau.thetutor.exceptions.UserAlreadyExistsException;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.repositories.UserRepository;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
@@ -47,9 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        if (existsByUsername(user.getUsername())) {
-            throw new UserAlreadyExistsException("User with username: " + user.getUsername() + " already exists!");
-        }
         return userRepository.save(user);
     }
 

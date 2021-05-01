@@ -16,7 +16,7 @@
         <!--        add logo img! -->
         <div sec:authorize="isAuthenticated()">
             <a th:href="@{/user/{username}(username=${#authentication.getName()})}">
-                <h4 th:text="'@'+ ${#authentication.getName()}">Hi, theTutor!</h4>
+                <h4 th:text="'@'+ ${#authentication.name}">Hi, theTutor!</h4>
             </a>
         </div>
     </div>

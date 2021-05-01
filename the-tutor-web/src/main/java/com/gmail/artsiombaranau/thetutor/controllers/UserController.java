@@ -2,10 +2,16 @@ package com.gmail.artsiombaranau.thetutor.controllers;
 
 import com.gmail.artsiombaranau.thetutor.enums.Roles;
 import com.gmail.artsiombaranau.thetutor.model.User;
+import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Collection;
 
 @Slf4j
 @Controller
@@ -29,6 +36,9 @@ public class UserController {
     private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
+
+    @Qualifier(value = "userToUserDetailsConverter")
+    private final Converter<User, UserDetailsImpl> userToUserDetailsConverter;
 
     @GetMapping("/{username}")
     public String getUser(@PathVariable String username, Model model) {
@@ -53,43 +63,47 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Principal principal, Model model) {
+    public String saveUpdatedUser(@ModelAttribute @Valid User user, BindingResult bindingResult, @AuthenticationPrincipal UserDetailsImpl principal, Model model) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute(user);
+            model.addAttribute("user", user);
 
             return CREATE_OR_UPDATE;
         } else {
             boolean existByUsername = userService.existsByUsername(user.getUsername());
-            boolean isUsernameEqualsPrincipalName = user.getUsername().equals(principal.getName());
+            boolean isUsernameEqualsPrincipalName = user.getUsername().equals(principal.getUsername());
 
-            if (existByUsername && !isUsernameEqualsPrincipalName) { //add a check for existence by email
+            if (existByUsername && !isUsernameEqualsPrincipalName) {
                 String message = user.getUsername() + " already exists!";
                 bindingResult.addError(new FieldError("user", "username", message));
 
-                model.addAttribute(user);
+                model.addAttribute("user", user);
 
                 return CREATE_OR_UPDATE;
             } else {
                 user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
                 User savedUser = userService.save(user);
 
-                model.addAttribute("user", savedUser);
+                UserDetailsImpl userDetails = userToUserDetailsConverter.convert(savedUser);
+//              update principal's data
+                principal.setUsername(user.getUsername());
+                principal.setPassword(user.getPassword());
+                principal.setAuthorities((Collection<SimpleGrantedAuthority>) userDetails.getAuthorities());
 
-                return PROFILE;
+                model.addAttribute("user", savedUser);
             }
+            return PROFILE;
         }
     }
 
-    @PostMapping("/user/{id}/delete")
-    public String deleteUser(@PathVariable Long id, Principal principal, Model model) {
-        User userPrincipal = userService.findByUsername(principal.getName());
+    @GetMapping("/user/{id}/delete")
+    public String deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+        User userPrincipal = userService.findByUsername(principal.getUsername());
         User userToDelete = userService.findById(id);
 
-        if (principal.getName().equals(userToDelete.getUsername())) {
+        if (userPrincipal.getUsername().equals(userToDelete.getUsername())) {
             userService.deleteById(id);
 
-            //do logout
-            return "index";
+            return "redirect:/index"; //do logout
         } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
 

@@ -3,10 +3,13 @@ package com.gmail.artsiombaranau.thetutor.controllers;
 import com.gmail.artsiombaranau.thetutor.enums.Roles;
 import com.gmail.artsiombaranau.thetutor.model.Role;
 import com.gmail.artsiombaranau.thetutor.model.User;
+import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -14,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
@@ -45,6 +49,9 @@ public class RegisterController {
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+
+    @Qualifier(value = "userToUserDetailsConverter")
+    private final Converter<User, UserDetailsImpl> userToUserDetailsConverter;
 
     @GetMapping
     public String registerUserForm(Model model) {
@@ -121,7 +128,11 @@ public class RegisterController {
                 model.addAttribute("user", savedUser);
 
 //              auto login user after registration
-                AbstractAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+                UserDetailsImpl userDetails = userToUserDetailsConverter.convert(savedUser);
+
+                AbstractAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.getUsername(),
+                        user.getPassword(), userDetails.getAuthorities());
+
                 authToken.setDetails(new WebAuthenticationDetails(httpRequest));
 
                 Authentication authentication = authenticationManager.authenticate(authToken);
