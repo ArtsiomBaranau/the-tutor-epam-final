@@ -23,6 +23,7 @@
         </div>
         <div class="col-8">
             <div style="width:30%; margin-top: 30%">
+                <h7 class="alert alert-danger" th:if="${(param.failure != null) and (param.failure[0]=='true')}">Username or/and Password is/are invalid!</h7>
                 <form th:action="@{/login}" method="post">
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">

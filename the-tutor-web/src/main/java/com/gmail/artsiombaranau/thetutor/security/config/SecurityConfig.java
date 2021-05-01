@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                                requests.anyRequest().permitAll()
                                 requests
                                         .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
-                                        .mvcMatchers("/login*").permitAll()
+                                        .mvcMatchers("/login**").permitAll()
                                         .mvcMatchers("/register*").permitAll()
                                         .mvcMatchers("/logout*").authenticated()
                                         .mvcMatchers("/user/{username}*").authenticated()
@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")
-						.failureForwardUrl("/login?failure=true") //add to login page check 
+						.failureUrl("/login?failure=true")
         )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
