@@ -32,14 +32,14 @@
         <div class="card-header">
             <div class="float-left" th:text="'@'+${user.username}+' User Profile.'">User Profile.</div>
             <div class="row float-right">
-                <div th:if="${#authentication.getName()}!=${user.username}" sec:authorize="hasAuthority('ADMIN')">
+                <div th:if="${#authentication.name}!=${user.username}" sec:authorize="hasAuthority('ADMIN')">
                     <a th:href="@{/user/{id}/delete(id=${user.id})}">
                         <button class="btn-dark">
                             <i class="fas fa-trash fa-lg"></i>
                         </button>
                     </a>
                 </div>
-                <div th:if="${#authentication.getName()}==${user.username}"
+                <div th:if="${#authentication.name}==${user.username}"
                      sec:authorize="isAuthenticated()">
                     <a th:href="@{/user/update}">
                         <button class="btn-dark">

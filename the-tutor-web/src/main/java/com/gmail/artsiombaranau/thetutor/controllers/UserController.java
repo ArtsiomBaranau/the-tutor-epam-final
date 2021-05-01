@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Collection;
 
 @Slf4j
@@ -54,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/update")
-    public String updateUserForm(Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());
+    public String updateUserForm(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+        User user = userService.findByUsername(principal.getUsername());
 
         model.addAttribute("user", user);
 
@@ -95,7 +93,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/user/{id}/delete")
+    @GetMapping("/{id}/delete")
     public String deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal, Model model) {
         User userPrincipal = userService.findByUsername(principal.getUsername());
         User userToDelete = userService.findById(id);
@@ -103,9 +101,15 @@ public class UserController {
         if (userPrincipal.getUsername().equals(userToDelete.getUsername())) {
             userService.deleteById(id);
 
-            return "redirect:/index"; //do logout
+            log.info("User with id: {} was deleted!", id);
+
+            return "redirect:/logout";
         } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
+
+//          invalidate session for deleted user!
+
+            log.info("User with id: {} was deleted by admin: {}!", id, userPrincipal.getUsername());
 
             return "redirect:/menu";
         } else {
