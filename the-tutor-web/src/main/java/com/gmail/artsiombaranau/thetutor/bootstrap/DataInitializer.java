@@ -26,8 +26,8 @@ public class DataInitializer implements CommandLineRunner {
     private final UserService userService;
 
     @Override
-    public void run(String... args) throws Exception {
-        loadData();
+    public void run(String... args) {
+//        loadData();
     }
 
     private void loadData() {
