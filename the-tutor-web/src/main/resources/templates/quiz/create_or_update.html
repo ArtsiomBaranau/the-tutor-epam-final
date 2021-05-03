@@ -46,7 +46,7 @@
                     <span class="input-group-text">Specialty:</span>
                 </div>
                 <div th:if="${quiz['new']}">
-                    <select class="form-control" th:name="${quiz.specialty}">
+                    <select class="form-control" th:field="*{specialty}">
                         <option th:each="specialty,itemSpecialty:${specialtiesList}" th:value="${specialty.id}"
                                 th:text="${specialty.description}" th:selected="${itemSpecialty.count}==1">Specialty...
                         </option>

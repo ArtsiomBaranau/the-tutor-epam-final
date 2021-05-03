@@ -29,7 +29,7 @@ public class Quiz extends BaseEntity {
         this.user = user;
     }
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     @NotEmpty
     @Size(min = 5, max = 255)
     private String name;

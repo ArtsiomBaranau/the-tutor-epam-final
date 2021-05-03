@@ -1,12 +1,14 @@
 package com.gmail.artsiombaranau.thetutor.controllers;
 
 import com.gmail.artsiombaranau.thetutor.model.*;
+import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
 import com.gmail.artsiombaranau.thetutor.services.SpecialtyService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import com.gmail.artsiombaranau.thetutor.utils.QuizUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class QuizController {
 
     private static final String CREATE_OR_UPDATE = "quiz/create_or_update";
     private static final String PASS_QUIZ = "quiz/pass";
+    private static final String REDIRECT_MENU = "redirect:/menu";
 
     private final UserService userService;
     private final QuizService quizService;
@@ -36,8 +38,8 @@ public class QuizController {
     private final QuizUtils quizUtils;
 
     @GetMapping("/create")
-    public String createQuizForm(Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());
+    public String createQuizForm(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+        User user = userService.findByUsername(principal.getUsername());
 
         if (user != null) {
             Quiz quiz = quizUtils.createEmptyQuiz(user);
@@ -59,6 +61,8 @@ public class QuizController {
         if (bindingResult.hasErrors()) {
             List<Specialty> specialties = specialtyService.findAll();
 
+            quiz.setSpecialty(null);
+
             model.addAttribute("specialtiesList", specialties);
             model.addAttribute("quiz", quiz);
 
@@ -73,7 +77,7 @@ public class QuizController {
 
             quizService.save(quiz);
         }
-        return "index";
+        return REDIRECT_MENU;
     }
 
     @GetMapping("/{id}/update")
@@ -89,7 +93,7 @@ public class QuizController {
             return CREATE_OR_UPDATE;
         }
         //add error to model and return error page
-        return null;
+        return REDIRECT_MENU;
     }
 
     @PostMapping("/update")
@@ -105,7 +109,7 @@ public class QuizController {
             Quiz updatedAndSavedQuiz = quizService.save(quiz);
             model.addAttribute("quiz", updatedAndSavedQuiz);
 
-            return PASS_QUIZ;
+            return REDIRECT_MENU;
         }
         //add error to model and return error page
     }
@@ -126,7 +130,7 @@ public class QuizController {
                 return PASS_QUIZ;
             } else {
                 model.addAttribute("error", "Quiz with id: " + id + " doesn't exist!");
-                return "menu";
+                return REDIRECT_MENU;
             }
         }
         //add error to model and return error page
@@ -188,14 +192,14 @@ public class QuizController {
         return "quiz/progress";
     }
 
-    @PostMapping("/{id}/delete")
+    @GetMapping("/{id}/delete")
     public String deleteQuiz(@PathVariable Long id, Model model) {
         if (id != null) {
             quizService.deleteById(id);
 
-            return "menu";
+            return REDIRECT_MENU;
         }
         //add error to model and return error page
-        return "menu";
+        return REDIRECT_MENU;
     }
 }
