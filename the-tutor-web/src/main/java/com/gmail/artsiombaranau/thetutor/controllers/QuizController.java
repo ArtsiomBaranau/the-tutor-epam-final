@@ -126,7 +126,7 @@ public class QuizController {
                 return PASS_QUIZ;
             } else {
                 model.addAttribute("error", "Quiz with id: " + id + " doesn't exist!");
-                return "quiz/list"; //create page with list of quizzes
+                return "menu";
             }
         }
         //add error to model and return error page
