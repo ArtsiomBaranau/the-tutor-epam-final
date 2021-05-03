@@ -32,7 +32,7 @@ public class User extends BaseEntity {
         this.lastName = lastName;
     }
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     @NotEmpty
     @Size(min = 3, max = 255)
     @Pattern(regexp = "[A-Za-z0-9_-]+")
@@ -46,7 +46,7 @@ public class User extends BaseEntity {
     @Size(min = 3)
     private String password;
 
-    @Column(name = "encrypted_password")
+    @Column(name = "encrypted_password", nullable = false)
     private String encryptedPassword;
 
 //    @Singular

@@ -24,7 +24,7 @@ public class Answer extends BaseEntity{
         this.question = question;
     }
 
-    @Column(name = "description")
+    @Column(name = "description",  nullable = false)
     @NotEmpty
     @Size(min = 1, max = 255)
     private String description;

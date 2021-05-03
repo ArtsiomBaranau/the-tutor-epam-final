@@ -20,7 +20,7 @@ public class Role extends BaseEntity {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name", unique = true)
+    @Column(name = "name", nullable = false, unique = true)
     private Roles name;
 
     @Override

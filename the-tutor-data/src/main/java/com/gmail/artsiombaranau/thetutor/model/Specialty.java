@@ -20,7 +20,7 @@ public class Specialty extends BaseEntity {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "description", unique = true)
+    @Column(name = "description", nullable = false, unique = true)
     private Specialties description;
 
     @Override
