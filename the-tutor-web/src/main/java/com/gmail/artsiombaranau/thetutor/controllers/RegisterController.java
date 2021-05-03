@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Controller;
@@ -79,39 +78,18 @@ public class RegisterController {
 
             return CREATE_OR_UPDATE;
         } else {
-            boolean existByUsername = userService.existsByUsername(user.getUsername());
-            boolean existByEmail = userService.existsByEmail(user.getEmail());
+            boolean existsByUsername = userService.existsByUsername(user.getUsername());
+            boolean existsByEmail = userService.existsByEmail(user.getEmail());
 
-            if (existByUsername && existByEmail) {
-                String messageUsername = user.getUsername() + " already exists!";
-                bindingResult.addError(new FieldError("user", "username", messageUsername));
-
-                String messageEmail = user.getEmail() + " already exists!";
-                bindingResult.addError(new FieldError("user", "email", messageEmail));
-
-                List<Role> roles = new ArrayList<>();
-                roles.add(roleService.findByName(Roles.STUDENT));
-                roles.add(roleService.findByName(Roles.TUTOR));
-
-                model.addAttribute("rolesList", roles);
-                model.addAttribute("user", user);
-
-                return CREATE_OR_UPDATE;
-            } else if (!existByUsername && existByEmail) {
-                String messageEmail = user.getEmail() + " already exists!";
-                bindingResult.addError(new FieldError("user", "email", messageEmail));
-
-                List<Role> roles = new ArrayList<>();
-                roles.add(roleService.findByName(Roles.STUDENT));
-                roles.add(roleService.findByName(Roles.TUTOR));
-
-                model.addAttribute("rolesList", roles);
-                model.addAttribute("user", user);
-
-                return CREATE_OR_UPDATE;
-            } else if (existByUsername && !existByEmail) {
-                String messageUsername = user.getUsername() + " already exists!";
-                bindingResult.addError(new FieldError("user", "username", messageUsername));
+            if (existsByUsername || existsByEmail) {
+                if (existsByUsername) {
+                    String messageUsername = user.getUsername() + " already exists!";
+                    bindingResult.addError(new FieldError("user", "username", messageUsername));
+                }
+                if (existsByEmail) {
+                    String messageEmail = user.getEmail() + " already exists!";
+                    bindingResult.addError(new FieldError("user", "email", messageEmail));
+                }
 
                 List<Role> roles = new ArrayList<>();
                 roles.add(roleService.findByName(Roles.STUDENT));
