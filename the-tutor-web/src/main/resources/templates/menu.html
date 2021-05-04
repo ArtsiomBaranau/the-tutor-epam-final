@@ -16,13 +16,70 @@
 <body>
 <div th:replace="fragments/fragments :: navbar"></div>
 
-<div class="container-fluid">
+<div class="container-fluid vh-100">
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <h1 class="display-4" th:text="#{app.name}">Application name.</h1>
             <p class="lead" th:text="#{page.jumbotron.menu}">Different Quizzes you Can Take Online!</p>
         </div>
     </div>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">
+                    <i class="fas fa-address-card fa-lg"></i>
+                </th>
+                <th scope="col">Username.</th>
+                <th scope="col">First name.</th>
+                <th scope="col">Last name</th>
+                <th scope="col">Roles.</th>
+                <th scope="col">Actions.</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user:${users}">
+                <th scope="row">
+                    <i class="fas fa-address-card fa-lg"></i>
+                </th>
+
+                <td>
+                    <a th:href="@{/user/{username}(username=${user.username})}"
+                       th:text="'@'+${user.username}">@username</a>
+                </td>
+
+                <td th:text="${user.firstName}">First name.</td>
+                <td th:text="${user.lastName}">Last name.</td>
+
+                <td>
+                    <strong th:each="role,itemRole:${user.roles}">
+                        <i th:text="${#lists.size(user.roles)>itemRole.count}?${user.roles[__${itemRole.index}__].name}+',&nbsp;':${user.roles[__${itemRole.index}__].name}">
+                            Role.
+                        </i>
+                    </strong>
+                </td>
+
+                <td>
+                    <div class="row">
+                        <a th:href="@{/user/{id}/admin(id=${user.id})}">
+                            <button class="btn-dark">
+                                <i th:class="${user.roles.contains(roleAdmin)}?'fa fa-thumbs-down fa-lg':'fa fa-thumbs-up fa-lg'"></i>
+                            </button>
+                        </a>
+                        <a th:href="@{/user/{id}/delete(id=${user.id})}">
+                            <button class="btn-dark">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </button>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <br>
 
     <table class="table">
         <thead class="thead-dark">

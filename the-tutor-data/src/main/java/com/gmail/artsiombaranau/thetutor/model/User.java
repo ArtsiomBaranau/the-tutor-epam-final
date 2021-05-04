@@ -49,13 +49,6 @@ public class User extends BaseEntity {
     @Column(name = "encrypted_password", nullable = false)
     private String encryptedPassword;
 
-//    @Singular
-//    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER) //do i need cascade type merge?
-//    @JoinTable(name = "user_specialties",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "specialty_id"))
-//    private Set<Specialty> specialties = new HashSet<>();
-
     @Singular
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_roles",

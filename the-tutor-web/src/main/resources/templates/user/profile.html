@@ -79,6 +79,13 @@
                             Role.
                         </i>
                     </strong>
+                <div sec:authorize="hasAuthority('ADMIN')">
+                <a class="pl-3" th:href="@{/user/{id}/admin(id=${user.id})}">
+                    <button class="btn-dark">
+                        <i th:class="${user.roles.contains(roleAdmin)}?'fa fa-thumbs-down fa-lg':'fa fa-thumbs-up fa-lg'"></i>
+                    </button>
+                </a>
+                </div>
                 </p>
             </div>
 
@@ -91,9 +98,9 @@
             </div>
         </div>
     </div>
-
-    <div th:replace="fragments/fragments :: footer"></div>
 </div>
+
+<div th:replace="fragments/fragments :: footer"></div>
 
 <script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
 <script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>

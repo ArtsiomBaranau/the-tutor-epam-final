@@ -45,13 +45,22 @@ public class UserController {
     private final Converter<User, UserDetailsImpl> userToUserDetailsConverter;
 
     @GetMapping("/{username}")
-    public String getUser(@PathVariable String username, Model model) {
+    public String getUser(@PathVariable String username, @AuthenticationPrincipal UserDetailsImpl principal, Model model) {
         User user = userService.findByUsername(username);
 
         if (user != null) {
-            model.addAttribute("user", user);
+            if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.name()))) {
+                Role roleAdmin = roleService.findByName(Roles.ADMIN);
 
-            return PROFILE;
+                model.addAttribute("roleAdmin", roleAdmin);
+                model.addAttribute("user", user);
+
+                return PROFILE;
+            } else {
+                model.addAttribute("user", user);
+
+                return PROFILE;
+            }
         } else {
             return "redirect:/menu";
         }
@@ -88,6 +97,7 @@ public class UserController {
                 User savedUser = userService.save(user);
 
                 UserDetailsImpl userDetails = userToUserDetailsConverter.convert(savedUser);
+
 //              update principal's data
                 principal.setUsername(user.getUsername());
                 principal.setPassword(user.getPassword());
@@ -113,7 +123,7 @@ public class UserController {
         } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
 
-            //          invalidate session for deleted user!
+//          invalidate session for deleted user!
             List<Object> loggedUsers = sessionRegistry.getAllPrincipals();
 
             for (Object loggedUser : loggedUsers) {
