@@ -1,5 +1,6 @@
 package com.gmail.artsiombaranau.thetutor.security.config;
 
+import com.gmail.artsiombaranau.thetutor.security.session.CustomSessionInformationExpiredStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +10,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.session.*;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -56,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/")
-						.failureUrl("/login?failure=true")
+                        .failureUrl("/login?failure=true")
         )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -64,6 +72,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
+                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionAuthenticationStrategy(concurrentSession())
+                                .sessionConcurrency(sessionConcurrency ->
+                                        sessionConcurrency
+                                                .maximumSessions(-1)
+//                                                .expiredUrl("/login")
+                                                .sessionRegistry(sessionRegistry())
+                                                .expiredSessionStrategy(sessionInformationExpiredStrategy())
+                                )
                 );
     }
 
@@ -75,5 +94,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager customAuthenticationManager() throws Exception {
         return this.authenticationManager();
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    @Bean
+    public CompositeSessionAuthenticationStrategy concurrentSession() {
+
+        ConcurrentSessionControlAuthenticationStrategy concurrentAuthenticationStrategy = new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
+        List<SessionAuthenticationStrategy> delegateStrategies = new ArrayList<>();
+
+        delegateStrategies.add(concurrentAuthenticationStrategy);
+        delegateStrategies.add(new SessionFixationProtectionStrategy());
+        delegateStrategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistry()));
+
+        return new CompositeSessionAuthenticationStrategy(delegateStrategies);
+    }
+
+    @Bean
+    public SessionInformationExpiredStrategy sessionInformationExpiredStrategy() {
+        return new CustomSessionInformationExpiredStrategy("/login");
     }
 }

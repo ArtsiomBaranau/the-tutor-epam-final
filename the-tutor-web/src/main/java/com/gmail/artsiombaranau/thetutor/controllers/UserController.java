@@ -1,6 +1,7 @@
 package com.gmail.artsiombaranau.thetutor.controllers;
 
 import com.gmail.artsiombaranau.thetutor.enums.Roles;
+import com.gmail.artsiombaranau.thetutor.model.Role;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -34,6 +39,7 @@ public class UserController {
     private final RoleService roleService;
 
     private final PasswordEncoder passwordEncoder;
+    private final SessionRegistry sessionRegistry;
 
     @Qualifier(value = "userToUserDetailsConverter")
     private final Converter<User, UserDetailsImpl> userToUserDetailsConverter;
@@ -107,13 +113,52 @@ public class UserController {
         } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
             userService.deleteById(id);
 
-//          invalidate session for deleted user!
+            //          invalidate session for deleted user!
+            List<Object> loggedUsers = sessionRegistry.getAllPrincipals();
+
+            for (Object loggedUser : loggedUsers) {
+                if (((UserDetails) loggedUser).getUsername().equals(userToDelete.getUsername())) {
+
+                    List<SessionInformation> loggedUserSessions = sessionRegistry.getAllSessions(loggedUser, false);
+
+                    for (SessionInformation sessionInformation : loggedUserSessions) {
+                        sessionInformation.expireNow();
+                    }
+                }
+            }
+
 
             log.info("User with id: {} was deleted by admin: {}!", id, userPrincipal.getUsername());
 
             return "redirect:/menu";
         } else {
             model.addAttribute("error", "You have no rights for this operation!");
+
+            return "redirect:/menu";
+        }
+
+    }
+
+    @GetMapping("/{id}/admin")
+    public String adminUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal, Model
+            model) {
+        User userToAdmin = userService.findById(id);
+
+        Role roleAdmin = roleService.findByName(Roles.ADMIN);
+
+        if (userToAdmin.getRoles().contains(roleAdmin)) {
+            userToAdmin.removeRole(roleAdmin);
+
+            userService.save(userToAdmin);
+//          invalidate session for deleted user!
+
+            return "redirect:/menu";
+        } else {
+            userToAdmin.addRole(roleAdmin);
+
+            userService.save(userToAdmin);
+
+            log.info("User with id: {} was made to admin by principal: {}!", id, principal.getUsername());
 
             return "redirect:/menu";
         }
