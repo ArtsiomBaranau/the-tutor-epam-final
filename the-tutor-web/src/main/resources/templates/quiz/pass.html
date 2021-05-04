@@ -12,7 +12,7 @@
 </head>
 
 <body>
-<div class="container-fluid">
+<div class="container-fluid vh-100">
     <div th:replace="fragments/fragments :: navbar"></div>
 
     <form class="form-group" th:object="${quiz}" th:action="@{/quiz/pass}" method="post">

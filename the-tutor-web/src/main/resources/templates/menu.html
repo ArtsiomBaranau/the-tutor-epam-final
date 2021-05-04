@@ -79,6 +79,13 @@
         </tr>
         </tbody>
     </table>
+    <div sec:authorize="hasAuthority('TUTOR')">
+        <a th:href="@{/quiz/create}">
+            <button class="btn-dark">
+                Create Quiz!
+            </button>
+        </a>
+    </div>
 </div>
 
 <div th:replace="fragments/fragments :: footer"></div>
