@@ -103,7 +103,7 @@ class RoleServiceImplTest {
 //        given
         given(roleRepository.save(any(Role.class))).willReturn(role);
 //        when
-        Role savedRole = roleRepository.save(role);
+        Role savedRole = roleService.save(role);
 //        then
         then(roleRepository).should(times(1)).save(any(Role.class));
         assertNotNull(savedRole);
@@ -113,7 +113,7 @@ class RoleServiceImplTest {
     @Test
     void delete() {
 //        when
-        roleRepository.delete(role);
+        roleService.delete(role);
 //        then
         then(roleRepository).should(times(1)).delete(any(Role.class));
         verifyNoMoreInteractions(roleRepository);
@@ -122,7 +122,7 @@ class RoleServiceImplTest {
     @Test
     void deleteById() {
 //        when
-        roleRepository.deleteById(1L);
+        roleService.deleteById(1L);
 //        then
         then(roleRepository).should(times(1)).deleteById(anyLong());
         verifyNoMoreInteractions(roleRepository);

@@ -81,7 +81,7 @@ class QuizServiceImplTest {
 //        given
         given(quizRepository.save(any(Quiz.class))).willReturn(quiz);
 //        when
-        Quiz savedQuiz = quizRepository.save(quiz);
+        Quiz savedQuiz = quizService.save(quiz);
 //        then
         then(quizRepository).should(times(1)).save(any(Quiz.class));
         assertNotNull(savedQuiz);
@@ -91,7 +91,7 @@ class QuizServiceImplTest {
     @Test
     void delete() {
 //        when
-        quizRepository.delete(quiz);
+        quizService.delete(quiz);
 //        then
         then(quizRepository).should(times(1)).delete(any(Quiz.class));
         verifyNoMoreInteractions(quizRepository);
@@ -100,7 +100,7 @@ class QuizServiceImplTest {
     @Test
     void deleteById() {
 //        when
-        quizRepository.deleteById(1L);
+        quizService.deleteById(1L);
 //        then
         then(quizRepository).should(times(1)).deleteById(anyLong());
         verifyNoMoreInteractions(quizRepository);

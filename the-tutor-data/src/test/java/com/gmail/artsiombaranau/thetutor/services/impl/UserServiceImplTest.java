@@ -149,7 +149,7 @@ class UserServiceImplTest {
 //        given
         given(userRepository.save(any(User.class))).willReturn(user);
 //        when
-        User savedUser = userRepository.save(user);
+        User savedUser = userService.save(user);
 //        then
         then(userRepository).should(times(1)).save(any(User.class));
         assertNotNull(savedUser);
@@ -159,7 +159,7 @@ class UserServiceImplTest {
     @Test
     void delete() {
 //        when
-        userRepository.delete(user);
+        userService.delete(user);
 //        then
         then(userRepository).should(times(1)).delete(any(User.class));
         verifyNoMoreInteractions(userRepository);
@@ -168,7 +168,7 @@ class UserServiceImplTest {
     @Test
     void deleteById() {
 //        when
-        userRepository.deleteById(1L);
+        userService.deleteById(1L);
 //        then
         then(userRepository).should(times(1)).deleteById(anyLong());
         verifyNoMoreInteractions(userRepository);

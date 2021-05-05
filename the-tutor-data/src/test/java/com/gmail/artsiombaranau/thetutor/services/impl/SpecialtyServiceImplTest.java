@@ -79,7 +79,7 @@ class SpecialtyServiceImplTest {
 //        given
         given(specialtyRepository.save(any(Specialty.class))).willReturn(specialty);
 //        when
-        Specialty savedSpecialty = specialtyRepository.save(specialty);
+        Specialty savedSpecialty = specialtyService.save(specialty);
 //        then
         then(specialtyRepository).should(times(1)).save(any(Specialty.class));
         assertNotNull(savedSpecialty);
@@ -89,7 +89,7 @@ class SpecialtyServiceImplTest {
     @Test
     void delete() {
 //        when
-        specialtyRepository.delete(specialty);
+        specialtyService.delete(specialty);
 //        then
         then(specialtyRepository).should(times(1)).delete(any(Specialty.class));
         verifyNoMoreInteractions(specialtyRepository);
@@ -98,7 +98,7 @@ class SpecialtyServiceImplTest {
     @Test
     void deleteById() {
 //        when
-        specialtyRepository.deleteById(1L);
+        specialtyService.deleteById(1L);
 //        then
         then(specialtyRepository).should(times(1)).deleteById(anyLong());
         verifyNoMoreInteractions(specialtyRepository);
