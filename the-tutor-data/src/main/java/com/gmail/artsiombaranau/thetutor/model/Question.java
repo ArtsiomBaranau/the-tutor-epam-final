@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +19,7 @@ public class Question extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    @Builder
     public Question(Long id, String description, List<Answer> answers, Quiz quiz) {
         super(id);
         this.description = description;

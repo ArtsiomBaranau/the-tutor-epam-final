@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,6 +20,7 @@ public class User extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
+    @Builder
     public User(Long id, String username, String email, String password, String encryptedPassword, List<Role> roles, String firstName, String lastName) {
         super(id);
         this.username = username;

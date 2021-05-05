@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-@Builder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +16,7 @@ public class Answer extends BaseEntity{
 
     private static final long serialVersionUID = 1L;
 
+    @Builder
     public Answer(Long id, String description, Boolean isRight, Question question) {
         super(id);
         this.description = description;
