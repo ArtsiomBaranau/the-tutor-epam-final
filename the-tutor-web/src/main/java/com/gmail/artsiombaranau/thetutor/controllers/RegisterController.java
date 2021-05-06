@@ -40,6 +40,7 @@ import java.util.List;
 public class RegisterController {
 
     private static final String CREATE_OR_UPDATE = "user/create_or_update";
+    private static final String REDIRECT_MENU = "redirect:/menu";
 
     private final UserService userService;
     private final RoleService roleService;
@@ -56,9 +57,10 @@ public class RegisterController {
     public String registerUserForm(Model model) {
         User user = User.builder().build();
 
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleService.findByName(Roles.STUDENT));
-        roles.add(roleService.findByName(Roles.TUTOR));
+        Role roleStudent = roleService.findByName(Roles.STUDENT);
+        Role roleTutor = roleService.findByName(Roles.TUTOR);
+
+        List<Role> roles = List.of(roleStudent, roleTutor);
 
         model.addAttribute("user", user);
         model.addAttribute("rolesList", roles);
@@ -67,7 +69,7 @@ public class RegisterController {
     }
 
     @PostMapping
-    public String doRegister(@ModelAttribute @Valid User user, BindingResult bindingResult, HttpServletRequest httpRequest, Model model) {
+    public String processUserCreationForm(@ModelAttribute @Valid User user, BindingResult bindingResult, HttpServletRequest httpRequest, Model model) {
         if (bindingResult.hasErrors()) {
             List<Role> roles = new ArrayList<>();
             roles.add(roleService.findByName(Roles.STUDENT));
@@ -91,9 +93,10 @@ public class RegisterController {
                     bindingResult.addError(new FieldError("user", "email", messageEmail));
                 }
 
-                List<Role> roles = new ArrayList<>();
-                roles.add(roleService.findByName(Roles.STUDENT));
-                roles.add(roleService.findByName(Roles.TUTOR));
+                Role roleStudent = roleService.findByName(Roles.STUDENT);
+                Role roleTutor = roleService.findByName(Roles.TUTOR);
+
+                List<Role> roles = List.of(roleStudent, roleTutor);
 
                 model.addAttribute("rolesList", roles);
                 model.addAttribute("user", user);
@@ -102,8 +105,6 @@ public class RegisterController {
             } else {
                 user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
                 User savedUser = userService.save(user);
-
-                model.addAttribute("user", savedUser);
 
 //              auto login user after registration
                 UserDetailsImpl userDetails = userToUserDetailsConverter.convert(savedUser);
@@ -129,7 +130,7 @@ public class RegisterController {
 
                 log.info("User: {} just registered!", savedUser.getUsername());
 
-                return "redirect:/menu";
+                return REDIRECT_MENU;
             }
         }
     }
