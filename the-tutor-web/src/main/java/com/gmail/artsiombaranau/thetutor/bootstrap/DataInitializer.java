@@ -55,8 +55,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("admin@gmail.com")
                 .password("admin")
                 .encryptedPassword(passwordEncoder.encode("admin"))
-                .role(tutorRole)
-                .role(adminRole)
+                .roles(List.of(tutorRole,adminRole))
                 .firstName("John")
                 .lastName("Thompson")
                 .build();
@@ -68,7 +67,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("tutor@gmail.com")
                 .password("tutor")
                 .encryptedPassword(passwordEncoder.encode("tutor"))
-                .role(tutorRole)
+                .roles(List.of(tutorRole))
                 .firstName("John")
                 .lastName("Doe")
                 .build();
@@ -80,7 +79,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("student@gmail.com")
                 .password("student")
                 .encryptedPassword(passwordEncoder.encode("student"))
-                .role(studentRole)
+                .roles(List.of(studentRole))
                 .firstName("Jane")
                 .lastName("Doe")
                 .build();

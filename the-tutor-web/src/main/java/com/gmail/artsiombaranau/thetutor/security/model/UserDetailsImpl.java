@@ -1,9 +1,9 @@
 package com.gmail.artsiombaranau.thetutor.security.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,39 +24,34 @@ public class UserDetailsImpl implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
 
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    @Builder
+    public UserDetailsImpl(Collection<SimpleGrantedAuthority> authorities, String username, String password, boolean enabled, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired) {
+        this.authorities = authorities;
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+        this.accountNonExpired = accountNonExpired;
+        this.accountNonLocked = accountNonLocked;
+        this.credentialsNonExpired = credentialsNonExpired;
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserDetailsImpl)) return false;
+
+        UserDetailsImpl that = (UserDetailsImpl) o;
+
+        if (authorities != null ? !authorities.equals(that.authorities) : that.authorities != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        return password != null ? password.equals(that.password) : that.password == null;
     }
 
     @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
+    public int hashCode() {
+        int result = authorities != null ? authorities.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
     }
 }
