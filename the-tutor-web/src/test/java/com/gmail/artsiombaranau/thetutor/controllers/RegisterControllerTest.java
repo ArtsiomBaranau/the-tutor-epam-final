@@ -106,7 +106,6 @@ class RegisterControllerTest {
 //      in order asserts
         inOrder.verify(bindingResult).hasErrors();
         inOrder.verify(model).addAttribute(anyString(), any(User.class));
-//        inOrder.verify(model, times(2)).addAttribute(anyString(), any());
         inOrder.verify(model).addAttribute(anyString(), anyList());
 
         verifyNoMoreInteractions(model);

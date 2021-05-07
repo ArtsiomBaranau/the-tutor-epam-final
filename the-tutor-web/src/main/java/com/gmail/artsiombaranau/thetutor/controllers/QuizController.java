@@ -30,6 +30,8 @@ public class QuizController {
     private static final String CREATE_OR_UPDATE = "quiz/create_or_update";
     private static final String PASS_QUIZ = "quiz/pass";
     private static final String REDIRECT_MENU = "redirect:/menu";
+    private static final String QUIZ_PROGRESS = "quiz/progress";
+    private static final String ERROR = "error";
 
     private final UserService userService;
     private final QuizService quizService;
@@ -41,19 +43,13 @@ public class QuizController {
     public String createQuizForm(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
         User user = userService.findByUsername(principal.getUsername());
 
-        if (user != null) {
-            Quiz quiz = quizUtils.createEmptyQuiz(user);
-            model.addAttribute("quiz", quiz);
+        Quiz quiz = quizUtils.createEmptyQuiz(user);
+        model.addAttribute("quiz", quiz);
 
-            List<Specialty> specialties = specialtyService.findAll();
-            model.addAttribute("specialtiesList", specialties);
+        List<Specialty> specialties = specialtyService.findAll();
+        model.addAttribute("specialtiesList", specialties);
 
-            return CREATE_OR_UPDATE;
-        } else {
-            model.addAttribute("error", "Please, authorize yourself one more time!");
-
-            return "index";
-        }
+        return CREATE_OR_UPDATE;
     }
 
     @PostMapping("/create")
@@ -75,25 +71,34 @@ public class QuizController {
                                 .forEach(answer -> answer.setQuestion(question));
                     });
 
-            quizService.save(quiz);
+            Quiz savedQuiz = quizService.save(quiz);
+
+            if (savedQuiz != null) {
+
+                return REDIRECT_MENU;
+            } else {
+                model.addAttribute("quiz", quiz);
+
+                return CREATE_OR_UPDATE;
+            }
         }
-        return REDIRECT_MENU;
     }
 
     @GetMapping("/{id}/update")
     public String updateQuizForm(@PathVariable Long id, Model model) {
         Quiz quiz = quizService.findById(id);
 
-        List<Specialty> specialties = specialtyService.findAll();
+        if (quiz != null) {
+            List<Specialty> specialties = specialtyService.findAll();
 
-        if (quiz != null && specialties != null) {
             model.addAttribute("quiz", quiz);
             model.addAttribute("specialtiesList", specialties);
 
             return CREATE_OR_UPDATE;
         }
-        //add error to model and return error page
-        return REDIRECT_MENU;
+        model.addAttribute("error", "Quiz is gone...");
+
+        return ERROR;
     }
 
     @PostMapping("/update")
@@ -107,34 +112,36 @@ public class QuizController {
             return CREATE_OR_UPDATE;
         } else {
             Quiz updatedAndSavedQuiz = quizService.save(quiz);
-            model.addAttribute("quiz", updatedAndSavedQuiz);
 
-            return REDIRECT_MENU;
+            if (updatedAndSavedQuiz != null) {
+
+                return REDIRECT_MENU;
+            } else {
+                model.addAttribute("quiz", quiz);
+
+                return CREATE_OR_UPDATE;
+            }
         }
-        //add error to model and return error page
     }
 
     @GetMapping("/{id}")
     public String getQuiz(@PathVariable Long id, Model model) {
-        if (id != null) {
-            Quiz quiz = quizService.findById(id);
+        Quiz quiz = quizService.findById(id);
 
-            if (quiz != null) {
-                quiz.getQuestions().forEach(question -> {
-                    question.getAnswers().forEach(answer -> {
-                        answer.setIsRight(Boolean.FALSE);
-                    });
+        if (quiz != null) {
+            quiz.getQuestions().forEach(question -> {
+                question.getAnswers().forEach(answer -> {
+                    answer.setIsRight(Boolean.FALSE);
                 });
-                model.addAttribute(quiz);
+            });
+            model.addAttribute("quiz", quiz);
 
-                return PASS_QUIZ;
-            } else {
-                model.addAttribute("error", "Quiz with id: " + id + " doesn't exist!");
-                return REDIRECT_MENU;
-            }
+            return PASS_QUIZ;
+        } else {
+            model.addAttribute("error", "Quiz with id: " + id + " doesn't exist!");
+
+            return ERROR;
         }
-        //add error to model and return error page
-        return null;
     }
 
     @PostMapping("/pass")
@@ -189,17 +196,13 @@ public class QuizController {
         model.addAttribute("percentage", percentage);
         model.addAttribute("questionsMap", questionsMap);
 
-        return "quiz/progress";
+        return QUIZ_PROGRESS;
     }
 
     @GetMapping("/{id}/delete")
-    public String deleteQuiz(@PathVariable Long id, Model model) {
-        if (id != null) {
-            quizService.deleteById(id);
+    public String deleteQuiz(@PathVariable Long id) {
+        quizService.deleteById(id);
 
-            return REDIRECT_MENU;
-        }
-        //add error to model and return error page
         return REDIRECT_MENU;
     }
 }
