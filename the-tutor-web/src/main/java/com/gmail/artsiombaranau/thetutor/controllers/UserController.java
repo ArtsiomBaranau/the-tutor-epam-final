@@ -34,6 +34,9 @@ public class UserController {
 
     private static final String CREATE_OR_UPDATE = "user/create_or_update";
     private static final String PROFILE = "user/profile";
+    private static final String REDIRECT_MENU = "redirect:/menu";
+    private static final String REDIRECT_LOGOUT = "redirect:/logout";
+    private static final String ERROR = "error";
 
     private final UserService userService;
     private final RoleService roleService;
@@ -62,7 +65,9 @@ public class UserController {
                 return PROFILE;
             }
         } else {
-            return "redirect:/menu";
+            model.addAttribute("error", "User with username: " + username + " not found!");
+
+            return ERROR;
         }
     }
 
@@ -85,7 +90,7 @@ public class UserController {
             boolean existByUsername = userService.existsByUsername(user.getUsername());
             boolean isUsernameEqualsPrincipalName = user.getUsername().equals(principal.getUsername());
 
-            if (existByUsername && !isUsernameEqualsPrincipalName) {
+            if (existByUsername && !isUsernameEqualsPrincipalName) { //check this!
                 String message = user.getUsername() + " already exists!";
                 bindingResult.addError(new FieldError("user", "username", message));
 
@@ -96,31 +101,40 @@ public class UserController {
                 user.setEncryptedPassword(passwordEncoder.encode(user.getPassword()));
                 User savedUser = userService.save(user);
 
-                UserDetailsImpl userDetails = userToUserDetailsConverter.convert(savedUser);
+                if (savedUser != null) {
+                    UserDetailsImpl userDetails = userToUserDetailsConverter.convert(savedUser);
 
 //              update principal's data
-                principal.setUsername(user.getUsername());
-                principal.setPassword(user.getPassword());
-                principal.setAuthorities((Collection<SimpleGrantedAuthority>) userDetails.getAuthorities());
+                    principal.setUsername(user.getUsername());
+                    principal.setPassword(user.getPassword());
+                    principal.setAuthorities(userDetails.getAuthorities());
 
-                model.addAttribute("user", savedUser);
+                    model.addAttribute("user", savedUser);
+
+                    return PROFILE;
+                } else {
+                    model.addAttribute("user", user);
+                    model.addAttribute("error", "Something went wrong!");
+
+                    return CREATE_OR_UPDATE;
+                }
             }
-            return PROFILE;
         }
     }
 
     @GetMapping("/{id}/delete")
     public String deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal, Model model) {
-        User userPrincipal = userService.findByUsername(principal.getUsername());
+//        User userPrincipal = userService.findByUsername(principal.getUsername());
         User userToDelete = userService.findById(id);
 
-        if (userPrincipal.getUsername().equals(userToDelete.getUsername())) {
+        if (principal.getUsername().equals(userToDelete.getUsername())) {
             userService.deleteById(id);
 
             log.info("User with id: {} was deleted!", id);
 
-            return "redirect:/logout";
-        } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
+            return REDIRECT_LOGOUT;
+//        } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
+        } else if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.name()))) {
             userService.deleteById(id);
 
 //          invalidate session for deleted user!
@@ -137,41 +151,59 @@ public class UserController {
                 }
             }
 
+            log.info("User with id: {} was deleted by admin: {}!", id, principal.getUsername());
 
-            log.info("User with id: {} was deleted by admin: {}!", id, userPrincipal.getUsername());
-
-            return "redirect:/menu";
+            return REDIRECT_MENU;
         } else {
             model.addAttribute("error", "You have no rights for this operation!");
 
-            return "redirect:/menu";
+            return ERROR;
         }
-
     }
 
     @GetMapping("/{id}/admin")
     public String adminUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal, Model
             model) {
-        User userToAdmin = userService.findById(id);
+        User userToUpdate = userService.findById(id);
 
         Role roleAdmin = roleService.findByName(Roles.ADMIN);
 
-        if (userToAdmin.getRoles().contains(roleAdmin)) {
-            userToAdmin.removeRole(roleAdmin);
+        if (userToUpdate.getRoles().contains(roleAdmin)) {
+            userToUpdate.removeRole(roleAdmin);
 
-            userService.save(userToAdmin);
-//          invalidate session for deleted user!
+            User updatedUser = userService.save(userToUpdate);
 
-            return "redirect:/menu";
+            if (updatedUser != null) {
+                model.addAttribute("user", updatedUser);
+
+                //          update user session with changing roles!
+
+                log.info("Admin with username: {} took away admin rights from user: {}",principal.getUsername(),updatedUser.getUsername());
+
+                return PROFILE;
+            } else {
+                model.addAttribute("error", "Something went wrong!");
+
+                return ERROR;
+            }
         } else {
-            userToAdmin.addRole(roleAdmin);
+            userToUpdate.addRole(roleAdmin);
 
-            userService.save(userToAdmin);
+            User updatedUser = userService.save(userToUpdate);
 
-            log.info("User with id: {} was made to admin by principal: {}!", id, principal.getUsername());
+            if (updatedUser != null) {
+                model.addAttribute("user", updatedUser);
 
-            return "redirect:/menu";
+                //          update user session with changing roles!
+
+                log.info("Admin with username: {} make user: {} to admin",principal.getUsername(),updatedUser.getUsername());
+
+                return PROFILE;
+            } else {
+                model.addAttribute("error", "Something went wrong!");
+
+                return ERROR;
+            }
         }
     }
-
 }
