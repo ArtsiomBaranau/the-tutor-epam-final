@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                         .mvcMatchers("/quiz/create").hasAnyAuthority("TUTOR", "ADMIN")
                                         .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update*").hasAnyAuthority("TUTOR", "ADMIN")
                                         .mvcMatchers(HttpMethod.POST, "/quiz/update*").hasAnyAuthority("TUTOR", "ADMIN")
-                                        .mvcMatchers(HttpMethod.POST, "/quiz/{id}/delete*").hasAuthority("ADMIN")
+                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}/delete*").hasAuthority("ADMIN")
                 )
                 .authorizeRequests()
                 .anyRequest().authenticated()
