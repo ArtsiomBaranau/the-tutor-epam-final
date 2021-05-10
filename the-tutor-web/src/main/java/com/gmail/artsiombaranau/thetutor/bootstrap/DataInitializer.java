@@ -27,7 +27,8 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        loadData();
+        if (roleService.findAll().isEmpty())
+            loadData();
     }
 
     private void loadData() {
@@ -55,7 +56,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("admin@gmail.com")
                 .password("admin")
                 .encryptedPassword(passwordEncoder.encode("admin"))
-                .roles(List.of(tutorRole,adminRole))
+                .roles(List.of(tutorRole, adminRole))
                 .firstName("John")
                 .lastName("Thompson")
                 .build();
