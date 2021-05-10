@@ -11,61 +11,64 @@
     <title th:text="Quiz">Title</title>
 </head>
 
-<body>
-<div class="container-fluid vh-100">
-    <div th:replace="fragments/fragments :: navbar"></div>
+<body class="min-vh-100">
 
-    <form class="form-group" th:object="${quiz}" th:action="@{/quiz/pass}" method="post">
+<div th:replace="fragments/fragments :: navbar"></div>
 
-        <div class="jumbotron jumbotron-fluid">
-            <div class="container">
-                <h1 class="display-4" th:text="*{name}">Quiz name.</h1>
-                <p class="lead" th:text="*{description}">Quiz description.</p>
-            </div>
-        </div>
+<div class="container-fluid">
 
-        <input type="hidden" th:field="*{id}"/>
-        <input type="hidden" th:field="*{name}"/>
-        <input type="hidden" th:field="*{description}"/>
-        <input type="hidden" th:field="*{user}"/>
+        <form class="form-group mb-lg-5" th:object="${quiz}" th:action="@{/quiz/pass}" method="post">
 
-                <div class="card border-light mb-3" th:each="question,itemQuestion:*{questions}">
-                    <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].id}">
-                    <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].quiz}">
-                    <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].description}">
-                    <div class="card-header"  th:text="'Question '+${itemQuestion.count}+':'">Question:</div>
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="*{questions[__${itemQuestion.index}__].description}">Some question
-                            description...</h5>
-
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"
-                                th:each="answer,itemAnswer:*{questions[__${itemQuestion.index}__].answers}">
-                                <input type="hidden"
-                                       th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].id}"/>
-                                <input type="hidden"
-                                       th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].question}"/>
-                                <input type="hidden"
-                                       th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}"/>
-                                <div class="input-group w-75 offset-3">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <input type="checkbox" aria-label="Checkbox for following text input"
-                                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].isRight}"
-                                            th:value="false"/>
-                                        </div>
-                                    </div>
-                                    <p class="input-group-text badge-light" th:text="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}">
-                                        Answer description...</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-4" th:text="*{name}">Quiz name.</h1>
+                    <p class="lead" th:text="*{description}">Quiz description.</p>
                 </div>
+            </div>
 
-            <button class="btn btn-default" type="submit">Check!</button>
-    </form>
-</div>
+            <input type="hidden" th:field="*{id}"/>
+            <input type="hidden" th:field="*{name}"/>
+            <input type="hidden" th:field="*{description}"/>
+            <input type="hidden" th:field="*{user}"/>
+
+            <div class="card border-light mb-3" th:each="question,itemQuestion:*{questions}">
+                <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].id}">
+                <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].quiz}">
+                <input type="hidden" th:field="*{questions[__${itemQuestion.index}__].description}">
+                <div class="card-header" th:text="'Question '+${itemQuestion.count}+':'">Question:</div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="*{questions[__${itemQuestion.index}__].description}">Some question
+                        description...</h5>
+
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"
+                            th:each="answer,itemAnswer:*{questions[__${itemQuestion.index}__].answers}">
+                            <input type="hidden"
+                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].id}"/>
+                            <input type="hidden"
+                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].question}"/>
+                            <input type="hidden"
+                                   th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}"/>
+                            <div class="input-group w-75 offset-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" aria-label="Checkbox for following text input"
+                                               th:field="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].isRight}"
+                                               th:value="false"/>
+                                    </div>
+                                </div>
+                                <p class="input-group-text badge-light"
+                                   th:text="*{questions[__${itemQuestion.index}__].answers[__${itemAnswer.index}__].description}">
+                                    Answer description...</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary float-right" type="submit">Check!</button>
+        </form>
+    </div>
 
 <div th:replace="fragments/fragments :: footer"></div>
 

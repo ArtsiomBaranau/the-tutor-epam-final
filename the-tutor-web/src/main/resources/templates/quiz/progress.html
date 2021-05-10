@@ -13,9 +13,10 @@
         Quiz Progress
     </title>
 </head>
-<body>
-<div class="container-fluid vh-100">
-    <div th:replace="fragments/fragments :: navbar"></div>
+<body class="min-vh-100">
+<div th:replace="fragments/fragments :: navbar"></div>
+
+<div class="container-fluid">
 
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -31,7 +32,7 @@
 
     <br>
 
-    <div class="card border-light mb-3" th:each="questionEntry,itemQuestion:${questionsMap}">
+    <div class="card border-light mb-lg-5" th:each="questionEntry,itemQuestion:${questionsMap}">
         <div class="card-header" th:text="'Question '+${itemQuestion.count}+':'">Question:</div>
         <div class="card-body">
             <h5 class="card-title" th:text="${questionEntry.key.description}">Some question

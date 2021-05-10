@@ -7,6 +7,9 @@
 
 .footer {
     background-color: #f5f5f5;
+    bottom: 0;
+    position: relative;
+    width: 100%;
 }
 
 /*Index Page and Login Form*/

@@ -15,22 +15,21 @@
     </title>
 </head>
 <body>
-<div class="container-fluid vh-100">
-    <div th:replace="fragments/fragments :: navbar"></div>
 
-    <!-- Breadcrumb -->
-    <!--        <nav aria-label="breadcrumb" class="main-breadcrumb">-->
-    <!--            <ol class="breadcrumb">-->
-    <!--                <li class="breadcrumb-item"><a href="index.html">Home</a></li>-->
-    <!--                <li class="breadcrumb-item"><a href="javascript:void(0)">User</a></li>-->
-    <!--                <li class="breadcrumb-item active" aria-current="page">User Profile</li>-->
-    <!--            </ol>-->
-    <!--        </nav>-->
-    <!-- /Breadcrumb -->
+<div th:replace="fragments/fragments :: navbar"></div>
+
+<div class="container-fluid vh-100">
+
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4" th:text="#{app.name}+' Application.'">theTutor Application.</h1>
+            <p class="lead">User's Profile.</p>
+        </div>
+    </div>
 
     <div class="card border-light mb-3">
         <div class="card-header">
-            <div class="float-left" th:text="'@'+${user.username}+' User Profile.'">User Profile.</div>
+            <div class="float-left" th:text="'@'+${user.username}">@username.</div>
             <div class="row float-right">
                 <div th:if="${#authentication.name}!=${user.username}" sec:authorize="hasAuthority('ADMIN')">
                     <a th:href="@{/user/{id}/delete(id=${user.id})}">
@@ -80,13 +79,12 @@
                         </i>
                     </strong>
                 <div sec:authorize="hasAuthority('ADMIN')">
-                <a class="pl-3" th:href="@{/user/{id}/admin(id=${user.id})}">
-                    <button class="btn-dark">
-                        <i th:class="${user.roles.contains(roleAdmin)}?'fa fa-thumbs-down fa-lg':'fa fa-thumbs-up fa-lg'"></i>
-                    </button>
-                </a>
+                    <a class="pl-3" th:href="@{/user/{id}/admin(id=${user.id})}">
+                        <button class="btn-dark">
+                            <i th:class="${user.roles.contains(roleAdmin)}?'fa fa-thumbs-down fa-lg':'fa fa-thumbs-up fa-lg'"></i>
+                        </button>
+                    </a>
                 </div>
-                </p>
             </div>
 
             <div class="input-group mb-3">
