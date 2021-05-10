@@ -72,6 +72,27 @@ class QuizControllerIT {
 
     @WithAnonymousUser
     @Test
+    void chooseQuestionsQuantityPageNotAuthorized() throws Exception {
+        mockMvc.perform(get("/quiz/create/quantity"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    void chooseQuestionsQuantityPageIsStudent() throws Exception {
+        mockMvc.perform(get("/quiz/create/quantity")
+                .with(user(student)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void chooseQuestionsQuantityPageIsTutor() throws Exception {
+        mockMvc.perform(get("/quiz/create/quantity")
+                .with(user(tutor)))
+                .andExpect(status().isOk());
+    }
+
+    @WithAnonymousUser
+    @Test
     void createQuizFormIsNotAuthorized() throws Exception {
         mockMvc.perform(get("/quiz/create"))
                 .andExpect(status().is3xxRedirection());

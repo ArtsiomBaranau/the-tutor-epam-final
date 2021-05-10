@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 @ExtendWith(MockitoExtension.class)
 class QuizControllerTest {
 
+    private static final String CHOOSE_QUESTIONS_QUANTITY = "quiz/choose_questions_quantity";
     private static final String CREATE_OR_UPDATE = "quiz/create_or_update";
     private static final String PASS_QUIZ = "quiz/pass";
     private static final String REDIRECT_MENU = "redirect:/menu";
@@ -69,18 +70,40 @@ class QuizControllerTest {
     }
 
     @Test
-    void createQuizForm() {
+    void chooseQuestionsQuantityPage() {
+        String viewName = quizController.chooseQuestionsQuantityPage();
+
+        assertEquals(CHOOSE_QUESTIONS_QUANTITY, viewName);
+    }
+
+    @Test
+    void createQuizFormQuantityIsLessThanOne() {
 //        given
         given(principal.getUsername()).willReturn("username");
         given(userService.findByUsername(anyString())).willReturn(user);
-        given(quizUtils.createEmptyQuiz(any(User.class))).willReturn(emptyQuiz);
-        given(specialtyService.findAll()).willReturn(specialties);
 //        when
-        String viewName = quizController.createQuizForm(principal, model);
+        String viewName = quizController.createQuizForm(principal, 0, model);
 //        then
         then(principal).should(times(1)).getUsername();
         then(userService).should(times(1)).findByUsername(anyString());
-        then(quizUtils).should(times(1)).createEmptyQuiz(any(User.class));
+        then(model).should(times(1)).addAttribute(anyString(),anyString());
+
+        assertEquals(ERROR, viewName);
+    }
+
+    @Test
+    void createQuizFormQuantityIsMoreThanOne() {
+//        given
+        given(principal.getUsername()).willReturn("username");
+        given(userService.findByUsername(anyString())).willReturn(user);
+        given(quizUtils.createEmptyQuiz(any(User.class), anyInt())).willReturn(emptyQuiz);
+        given(specialtyService.findAll()).willReturn(specialties);
+//        when
+        String viewName = quizController.createQuizForm(principal, 3, model);
+//        then
+        then(principal).should(times(1)).getUsername();
+        then(userService).should(times(1)).findByUsername(anyString());
+        then(quizUtils).should(times(1)).createEmptyQuiz(any(User.class), anyInt());
         then(specialtyService).should(times(1)).findAll();
         then(model).should(times(2)).addAttribute(anyString(), any());
 

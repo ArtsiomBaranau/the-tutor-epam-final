@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
+
+    <title>Choose!</title>
+</head>
+
+<body>
+
+<div th:replace="fragments/fragments :: navbar"></div>
+
+<div class="container-fluid">
+    <div class="row vh-100">
+        <div class="col-2 w-100" style="background-color: #4e555b">
+            <div class="left-side-main-text">
+                <h1 th:text="#{app.name}">Application</h1>
+                <p>Choose quantity of questions!</p>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="row h-100 justify-content-center align-items-center">
+
+                <form class="form-group" action="/quiz/create" method="get">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Quantity: </span>
+                        </div>
+                        <input type="number" class="form-control" placeholder="Enter quantity of questions here..." aria-label="Quantity"
+                               aria-describedby="basic-addon1" name="questionsQuantity">
+                    </div>
+
+                    <button class="btn btn-secondary" type="submit">Create!
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/fragments :: footer"></div>
+
+<script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
+<script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
+</body>
+</html>

@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                         .mvcMatchers("/menu*").authenticated()
                                         .mvcMatchers(HttpMethod.GET, "/quiz/{id}}*").authenticated()
                                         .mvcMatchers(HttpMethod.POST, "/quiz/pass*").authenticated()
+                                        .mvcMatchers(HttpMethod.GET, "/quiz/create/quantity").hasAnyAuthority("TUTOR", "ADMIN")
                                         .mvcMatchers("/quiz/create").hasAnyAuthority("TUTOR", "ADMIN")
                                         .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update*").hasAnyAuthority("TUTOR", "ADMIN")
                                         .mvcMatchers(HttpMethod.POST, "/quiz/update*").hasAnyAuthority("TUTOR", "ADMIN")
@@ -75,15 +76,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .deleteCookies("JSESSIONID")
                 )
                 .sessionManagement(sessionManagement ->
-                        sessionManagement
-                                .sessionAuthenticationStrategy(concurrentSession())
-                                .sessionConcurrency(sessionConcurrency ->
-                                        sessionConcurrency
-                                                .maximumSessions(-1)
+                                sessionManagement
+                                        .sessionAuthenticationStrategy(concurrentSession())
+                                        .sessionConcurrency(sessionConcurrency ->
+                                                        sessionConcurrency
+                                                                .maximumSessions(-1)
 //                                                .expiredUrl("/login")
-                                                .sessionRegistry(sessionRegistry())
-                                                .expiredSessionStrategy(sessionInformationExpiredStrategy())
-                                )
+                                                                .sessionRegistry(sessionRegistry())
+                                                                .expiredSessionStrategy(sessionInformationExpiredStrategy())
+                                        )
                 );
     }
 

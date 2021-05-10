@@ -27,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class QuizController {
 
+    private static final String CHOOSE_QUESTIONS_QUANTITY = "quiz/choose_questions_quantity";
     private static final String CREATE_OR_UPDATE = "quiz/create_or_update";
     private static final String PASS_QUIZ = "quiz/pass";
     private static final String REDIRECT_MENU = "redirect:/menu";
@@ -39,11 +40,23 @@ public class QuizController {
 
     private final QuizUtils quizUtils;
 
+    @GetMapping("/create/quantity")
+    public String chooseQuestionsQuantityPage() {
+
+        return CHOOSE_QUESTIONS_QUANTITY;
+    }
+
     @GetMapping("/create")
-    public String createQuizForm(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+    public String createQuizForm(@AuthenticationPrincipal UserDetailsImpl principal, @RequestParam(name = "questionsQuantity") Integer questionsQuantity, Model model) {
         User user = userService.findByUsername(principal.getUsername());
 
-        Quiz quiz = quizUtils.createEmptyQuiz(user);
+        if (questionsQuantity < 1) {
+            model.addAttribute("error", "You had to enter some number more than 1!");
+
+            return ERROR;
+        }
+
+        Quiz quiz = quizUtils.createEmptyQuiz(user, questionsQuantity);
         model.addAttribute("quiz", quiz);
 
         List<Specialty> specialties = specialtyService.findAll();

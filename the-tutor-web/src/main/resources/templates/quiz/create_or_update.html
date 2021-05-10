@@ -15,6 +15,13 @@
 <div class="container-fluid vh-100">
     <div th:replace="fragments/fragments :: navbar"></div>
 
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4" th:text="#{app.name}">Application name.</h1>
+            <p class="lead">Create an Awesome Quiz!</p>
+        </div>
+    </div>
+
     <form class="form-group" th:object="${quiz}" th:with="link=${quiz['new']} ? '/quiz/create' : '/quiz/update'"
           th:action="@{${link}}" method="post">
 
@@ -104,7 +111,7 @@
 
         <button
                 th:with="text=${quiz['new']} ? 'Create!' : 'Update!'"
-                class="btn btn-default" type="submit" th:text="${text}">Button!
+                class="btn btn-secondary float-right" type="submit" th:text="${text}">Button!
         </button>
     </form>
 </div>
