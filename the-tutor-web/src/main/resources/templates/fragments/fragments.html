@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="../../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}">
-    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0-1/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
 
     <title>Fragments</title>
 </head>
 <body>
 <div class="navbar navbar-light bg-dark" th:fragment="navbar">
     <div class="float-left">
-        <!--        add logo img! -->
+        <div sec:authorize="isAnonymous()">
+            <a class="navbar-brand" th:href="@{/index}">
+                <img th:src="@{images/logo.png}" class="d-inline-block align-top">
+                <strong class="text-light">theTutor</strong>
+            </a>
+        </div>
         <div sec:authorize="isAuthenticated()">
-            <a th:href="@{/user/{username}(username=${#authentication.getName()})}">
-                <button class="btn btn-secondary" th:text="'@'+ ${#authentication.name}">Hi, theTutor!</button>
+            <a class="navbar-brand" th:href="@{/user/{username}(username=${#authentication.getName()})}">
+                <img th:src="@{images/logo.png}" class="d-inline-block align-top">
+                <strong class="text-light" th:text="${#authentication.name}">Hi, theTutor!</strong>
             </a>
         </div>
     </div>
+
     <div class="float-right">
         <a th:href="@{/login}" sec:authorize="!isAuthenticated()">
             <button class="btn btn-secondary" th:text="LogIn">Button</button>
@@ -39,7 +46,7 @@
     </div>
 </footer>
 
-<script src="../../static/js/jquery.slim.min.js" th:src="@{/js/jquery.slim.min.js}"></script>
-<script src="../../static/js/bootstrap.bundle.js" th:src="@{/js/bootstrap.bundle.js}"></script>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.6.0-1/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

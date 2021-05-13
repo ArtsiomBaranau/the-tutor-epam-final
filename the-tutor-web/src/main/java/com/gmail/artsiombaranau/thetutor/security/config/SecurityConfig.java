@@ -40,9 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests(requests ->
-//                                requests.anyRequest().permitAll()
                                 requests
-                                        .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
+                                        .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/webjars/**", "/css/**", "/images/**").permitAll()
                                         .mvcMatchers("/login**").permitAll()
                                         .mvcMatchers("/register*").permitAll()
                                         .mvcMatchers("/logout*").authenticated()
@@ -81,7 +80,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                         .sessionConcurrency(sessionConcurrency ->
                                                         sessionConcurrency
                                                                 .maximumSessions(-1)
-//                                                .expiredUrl("/login")
                                                                 .sessionRegistry(sessionRegistry())
                                                                 .expiredSessionStrategy(sessionInformationExpiredStrategy())
                                         )
