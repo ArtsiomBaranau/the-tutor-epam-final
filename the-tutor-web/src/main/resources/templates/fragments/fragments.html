@@ -15,13 +15,13 @@
     <div class="float-left">
         <div sec:authorize="isAnonymous()">
             <a class="navbar-brand" th:href="@{/index}">
-                <img th:src="@{images/logo.png}" class="d-inline-block align-top">
+                <img th:src="@{~/images/logo.png}" class="d-inline-block align-top">
                 <strong class="text-light">theTutor</strong>
             </a>
         </div>
         <div sec:authorize="isAuthenticated()">
             <a class="navbar-brand" th:href="@{/user/{username}(username=${#authentication.getName()})}">
-                <img th:src="@{images/logo.png}" class="d-inline-block align-top">
+                <img th:src="@{~/images/logo.png}" class="d-inline-block align-top">
                 <strong class="text-light" th:text="${#authentication.name}">Hi, theTutor!</strong>
             </a>
         </div>
