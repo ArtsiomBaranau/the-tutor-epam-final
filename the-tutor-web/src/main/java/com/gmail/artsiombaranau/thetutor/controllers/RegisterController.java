@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -126,7 +127,11 @@ public class RegisterController {
                 emailMessage.setSubject("Registration in theTutor App");
                 emailMessage.setText("Thanks for registration!");
 
-                javaMailSender.send(emailMessage);
+                try {
+                    javaMailSender.send(emailMessage);
+                } catch (MailException ex) {
+                    log.error("Some problem with JavaMailSender:" + ex.getCause(), ex);
+                }
 
                 log.info("User: {} just registered!", savedUser.getUsername());
 
