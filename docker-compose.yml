@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  the-tutor-app:
+    image: artsiombaranau/the-tutor:v1.0
+    depends_on:
+      - mysql-database
+    command: sh -c './wait-for mysql-database:3306 -- java -jar the-tutor.jar'
+    restart: always
+    ports:
+      - 8080:9000
+
+  mysql-database:
+    image: mysql:8.0.25
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: the_tutor
+    volumes:
+      - ./mysql_data:/var/lib/mysql
