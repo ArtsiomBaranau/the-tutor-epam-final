@@ -1,0 +1,14 @@
+Dockerfile
+**/*.log
+**/*.class
+**/*.iml
+**/*.gz
+**/target/
+**/mysql_data/
+*.md
+!README*.md
+.idea/
+.circleci/
+.git/
+.gitignore
+.dockerignore
