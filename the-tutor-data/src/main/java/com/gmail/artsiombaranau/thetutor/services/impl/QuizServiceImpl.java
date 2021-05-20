@@ -3,12 +3,14 @@ package com.gmail.artsiombaranau.thetutor.services.impl;
 import com.gmail.artsiombaranau.thetutor.model.Quiz;
 import com.gmail.artsiombaranau.thetutor.repositories.QuizRepository;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,9 +25,15 @@ public class QuizServiceImpl implements QuizService {
     @Override
     @Transactional(readOnly = true)
     public List<Quiz> findAll() {
-        List<Quiz> quizzes = new ArrayList<>();
-        quizRepository.findAll().forEach(quizzes::add);
-        return quizzes;
+        return quizRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Quiz> findPaginated(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        return quizRepository.findAll(pageable);
     }
 
     @Override

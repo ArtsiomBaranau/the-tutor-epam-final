@@ -56,7 +56,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("admin@gmail.com")
                 .password("admin")
                 .encryptedPassword(passwordEncoder.encode("admin"))
-                .roles(List.of(tutorRole, adminRole))
+                .roles(List.of(adminRole))
                 .firstName("John")
                 .lastName("Thompson")
                 .build();
@@ -89,7 +89,7 @@ public class DataInitializer implements CommandLineRunner {
 
         log.info("Users are loaded.");
 
-        Quiz quizOne = Quiz.builder().name("Math quiz.").description("Easy quiz for children...").specialty(mathSpecialty).user(adminUser).build();
+        Quiz quizOne = Quiz.builder().name("Math quiz.").description("Easy quiz for children...").specialty(mathSpecialty).user(tutorUser).build();
 
         List<Question> questionsQuizOne = new ArrayList<>();
 
@@ -135,6 +135,69 @@ public class DataInitializer implements CommandLineRunner {
         quizOne.setQuestions(questionsQuizOne);
 
         quizService.save(quizOne);
+
+        Quiz quizTwo = Quiz.builder().name("Biology quiz.").description("Awesome biology quiz...").specialty(biologySpecialty).user(tutorUser).build();
+
+        List<Question> questionsQuizTwo = new ArrayList<>();
+
+        Question questionOneQuizTwo = Question.builder().description("How long does it take our eyes to fully adapt to darkness?").quiz(quizTwo).build();
+
+        List<Answer> answersQuestionOneQuizTwo = new ArrayList<>();
+
+        answersQuestionOneQuizTwo.add(Answer.builder().description("in 10 minutes").isRight(true).question(questionOneQuizTwo).build());
+        answersQuestionOneQuizTwo.add(Answer.builder().description("in 15 minutes").isRight(false).question(questionOneQuizTwo).build());
+        answersQuestionOneQuizTwo.add(Answer.builder().description("in 30 minutes").isRight(false).question(questionOneQuizTwo).build());
+        answersQuestionOneQuizTwo.add(Answer.builder().description("in 2 hours").isRight(false).question(questionOneQuizTwo).build());
+
+        questionOneQuizTwo.setAnswers(answersQuestionOneQuizTwo);
+
+        questionsQuizTwo.add(questionOneQuizTwo);
+
+        quizTwo.setQuestions(questionsQuizTwo);
+
+        quizService.save(quizTwo);
+
+        Quiz quizThree = Quiz.builder().name("Physics quiz.").description("Some physics quiz...").specialty(physicsSpecialty).user(tutorUser).build();
+
+        List<Question> questionsQuizThree = new ArrayList<>();
+
+        Question questionOneQuizThree = Question.builder().description("The instrument that measures and records the relative humidity of air is ...?").quiz(quizThree).build();
+
+        List<Answer> answersQuestionOneQuizThree = new ArrayList<>();
+
+        answersQuestionOneQuizThree.add(Answer.builder().description("Hydrometer").isRight(false).question(questionOneQuizThree).build());
+        answersQuestionOneQuizThree.add(Answer.builder().description("Hygrometer").isRight(true).question(questionOneQuizThree).build());
+        answersQuestionOneQuizThree.add(Answer.builder().description("Lactometer").isRight(false).question(questionOneQuizThree).build());
+        answersQuestionOneQuizThree.add(Answer.builder().description("Barometer").isRight(false).question(questionOneQuizThree).build());
+
+        questionOneQuizThree.setAnswers(answersQuestionOneQuizThree);
+
+        questionsQuizThree.add(questionOneQuizThree);
+
+        quizThree.setQuestions(questionsQuizThree);
+
+        quizService.save(quizThree);
+
+        Quiz quizFour = Quiz.builder().name("Philosophy quiz.").description("Some philosophy quiz...").specialty(philosophySpecialty).user(tutorUser).build();
+
+        List<Question> questionsQuizFour = new ArrayList<>();
+
+        Question questionOneQuizFour = Question.builder().description("The four main divisions of philosophy are metaphysics, epistemology, axiology, and ...?").quiz(quizFour).build();
+
+        List<Answer> answersQuestionOneQuizFour = new ArrayList<>();
+
+        answersQuestionOneQuizFour.add(Answer.builder().description("Bioethics").isRight(false).question(questionOneQuizFour).build());
+        answersQuestionOneQuizFour.add(Answer.builder().description("Logic").isRight(true).question(questionOneQuizFour).build());
+        answersQuestionOneQuizFour.add(Answer.builder().description("Aesthetics").isRight(false).question(questionOneQuizFour).build());
+        answersQuestionOneQuizFour.add(Answer.builder().description("Categorical logic").isRight(false).question(questionOneQuizFour).build());
+
+        questionOneQuizFour.setAnswers(answersQuestionOneQuizFour);
+
+        questionsQuizFour.add(questionOneQuizFour);
+
+        quizFour.setQuestions(questionsQuizFour);
+
+        quizService.save(quizFour);
 
         log.info("Quizzes are loaded.");
     }

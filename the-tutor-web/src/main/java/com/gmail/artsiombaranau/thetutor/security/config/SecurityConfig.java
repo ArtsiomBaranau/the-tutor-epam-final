@@ -40,23 +40,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests(requests ->
-                                requests
-                                        .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/webjars/**", "/css/**", "/images/**").permitAll()
-                                        .mvcMatchers("/login**").permitAll()
-                                        .mvcMatchers("/register*").permitAll()
-                                        .mvcMatchers("/logout*").authenticated()
-                                        .mvcMatchers("/user/{username}*").authenticated()
-                                        .mvcMatchers("/user/update*").authenticated()
-                                        .mvcMatchers(HttpMethod.GET, "/user/{id}/delete*").authenticated()
-                                        .mvcMatchers("/user/{id}/admin*").hasAuthority("ADMIN")
-                                        .mvcMatchers("/menu*").authenticated()
-                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}}*").authenticated()
-                                        .mvcMatchers(HttpMethod.POST, "/quiz/pass*").authenticated()
-                                        .mvcMatchers(HttpMethod.GET, "/quiz/create/quantity").hasAnyAuthority("TUTOR", "ADMIN")
-                                        .mvcMatchers("/quiz/create").hasAnyAuthority("TUTOR", "ADMIN")
-                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update*").hasAnyAuthority("TUTOR", "ADMIN")
-                                        .mvcMatchers(HttpMethod.POST, "/quiz/update*").hasAnyAuthority("TUTOR", "ADMIN")
-                                        .mvcMatchers(HttpMethod.GET, "/quiz/{id}/delete*").hasAuthority("ADMIN")
+                        requests
+                                .mvcMatchers(HttpMethod.GET, "", "/", "/index", "/webjars/**", "/css/**", "/images/**").permitAll()
+                                .mvcMatchers("/login**").permitAll()
+                                .mvcMatchers("/register*").permitAll()
+                                .mvcMatchers("/logout*").authenticated()
+                                .mvcMatchers("/user/{username}*").authenticated()
+                                .mvcMatchers("/user/update*").authenticated()
+                                .mvcMatchers(HttpMethod.GET, "/user/{id}/delete*").authenticated()
+                                .mvcMatchers("/user/{id}/admin*").hasAuthority("ADMIN")
+                                .mvcMatchers("/menu**").authenticated()
+                                .mvcMatchers(HttpMethod.GET, "/quiz/{id}}*").authenticated()
+                                .mvcMatchers(HttpMethod.POST, "/quiz/pass*").authenticated()
+                                .mvcMatchers(HttpMethod.GET, "/quiz/create/quantity").hasAnyAuthority("TUTOR", "ADMIN")
+                                .mvcMatchers("/quiz/create").hasAnyAuthority("TUTOR", "ADMIN")
+                                .mvcMatchers(HttpMethod.GET, "/quiz/{id}/update*").hasAnyAuthority("TUTOR", "ADMIN")
+                                .mvcMatchers(HttpMethod.POST, "/quiz/update*").hasAnyAuthority("TUTOR", "ADMIN")
+                                .mvcMatchers(HttpMethod.GET, "/quiz/{id}/delete*").hasAnyAuthority("TUTOR", "ADMIN")
                 )
                 .authorizeRequests()
                 .anyRequest().authenticated()
@@ -75,14 +75,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .deleteCookies("JSESSIONID")
                 )
                 .sessionManagement(sessionManagement ->
-                                sessionManagement
-                                        .sessionAuthenticationStrategy(concurrentSession())
-                                        .sessionConcurrency(sessionConcurrency ->
-                                                        sessionConcurrency
-                                                                .maximumSessions(-1)
-                                                                .sessionRegistry(sessionRegistry())
-                                                                .expiredSessionStrategy(sessionInformationExpiredStrategy())
-                                        )
+                        sessionManagement
+                                .sessionAuthenticationStrategy(concurrentSession())
+                                .sessionConcurrency(sessionConcurrency ->
+                                        sessionConcurrency
+                                                .maximumSessions(-1)
+                                                .sessionRegistry(sessionRegistry())
+                                                .expiredSessionStrategy(sessionInformationExpiredStrategy())
+                                )
                 );
     }
 

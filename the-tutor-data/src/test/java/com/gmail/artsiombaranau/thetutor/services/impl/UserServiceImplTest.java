@@ -7,7 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +48,18 @@ class UserServiceImplTest {
 //      then
         then(userRepository).should(times(1)).findAll();
         assertIterableEquals(users, receivedUsers);
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    void findPaginated() {
+//      given
+        Page<User> page = Mockito.mock(Page.class);
+        given(userRepository.findAll(any(Pageable.class))).willReturn(page);
+//      when
+        Page<User> receivedPage = userService.findPaginated(1,3);
+//      then
+        then(userRepository).should(times(1)).findAll(any(Pageable.class));
         verifyNoMoreInteractions(userRepository);
     }
 

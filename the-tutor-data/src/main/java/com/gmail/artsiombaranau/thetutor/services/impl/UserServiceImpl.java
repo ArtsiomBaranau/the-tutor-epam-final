@@ -3,6 +3,9 @@ package com.gmail.artsiombaranau.thetutor.services.impl;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.repositories.UserRepository;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +26,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
-        return users;
+        return userRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<User> findPaginated(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        return userRepository.findAll(pageable);
     }
 
     @Override
