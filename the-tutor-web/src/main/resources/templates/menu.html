@@ -82,70 +82,94 @@
         </table>
     </div>
 
-    <br>
+    <div sec:authorize="hasAuthority('STUDENT') || hasAuthority('TUTOR')">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">
+                    <i class="fas fa-book-open fa-lg"></i>
+                </th>
+                <th scope="col">Quiz name.</th>
+                <th scope="col">Quiz specialty.</th>
+                <th scope="col">Quiz description...</th>
+                <th scope="col">Created By.</th>
+                <th scope="col">Actions.</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="quiz:${quizzes}">
+                <th scope="row">
+                    <i class="fas fa-book-open fa-lg"></i>
+                </th>
 
-    <table class="table">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">
-                <i class="fas fa-book-open fa-lg"></i>
-            </th>
-            <th scope="col">Quiz name.</th>
-            <th scope="col">Quiz specialty.</th>
-            <th scope="col">Quiz description...</th>
-            <th scope="col">Created By.</th>
-            <th scope="col">Actions.</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="quiz:${quizzes}">
-            <th scope="row">
-                <i class="fas fa-book-open fa-lg"></i>
-            </th>
+                <td th:text="${quiz.name}">Quiz name.</td>
+                <td th:text="${quiz.specialty.description}">Quiz specialty.</td>
+                <td th:text="${quiz.description}">Quiz description...</td>
 
-            <td th:text="${quiz.name}">Quiz name.</td>
-            <td th:text="${quiz.specialty.description}">Quiz specialty.</td>
-            <td th:text="${quiz.description}">Quiz description...</td>
+                <td>
+                    <a th:href="@{/user/{username}(username=${quiz.user.username})}"
+                       th:text="'@'+${quiz.user.username}">@username</a>
+                </td>
 
-            <td>
-                <a th:href="@{/user/{username}(username=${quiz.user.username})}" th:text="'@'+${quiz.user.username}">@username</a>
-            </td>
-
-            <td>
-                <div class="row">
-                    <div sec:authorize="hasAuthority('STUDENT')">
-                        <a th:href="@{/quiz/{id}(id=${quiz.id})}">
-                            <button class="btn-dark float-right">
-                                Try Quiz!
-                            </button>
-                        </a>
+                <td>
+                    <div class="row">
+                        <div sec:authorize="hasAuthority('STUDENT')">
+                            <a th:href="@{/quiz/{id}(id=${quiz.id})}">
+                                <button class="btn-dark float-right">
+                                    Try Quiz!
+                                </button>
+                            </a>
+                        </div>
+                        <div sec:authorize="hasAnyAuthority('TUTOR')">
+                            <a th:href="@{/quiz/{id}/update(id=${quiz.id})}">
+                                <button class="btn-dark">
+                                    <i class="far fa-edit fa-lg"></i>
+                                </button>
+                            </a>
+                        </div>
+                        <div sec:authorize="hasAuthority('TUTOR')">
+                            <a th:href="@{/quiz/{id}/delete(id=${quiz.id})}">
+                                <button class="btn-dark">
+                                    <i class="fas fa-trash fa-lg"></i>
+                                </button>
+                            </a>
+                        </div>
                     </div>
-                    <div sec:authorize="hasAnyAuthority('TUTOR','ADMIN')">
-                        <a th:href="@{/quiz/{id}/update(id=${quiz.id})}">
-                            <button class="btn-dark">
-                                <i class="far fa-edit fa-lg"></i>
-                            </button>
-                        </a>
-                    </div>
-                    <div sec:authorize="hasAuthority('ADMIN')">
-                        <a th:href="@{/quiz/{id}/delete(id=${quiz.id})}">
-                            <button class="btn-dark">
-                                <i class="fas fa-trash fa-lg"></i>
-                            </button>
-                        </a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div sec:authorize="hasAuthority('TUTOR')">
-        <a th:href="@{/quiz/create/quantity}">
-            <button class="btn-dark float-right">
-                Create Quiz!
-            </button>
-        </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div sec:authorize="hasAuthority('TUTOR')">
+            <a th:href="@{/quiz/create/quantity}">
+                <button class="btn-dark float-right">
+                    Create Quiz!
+                </button>
+            </a>
+        </div>
     </div>
+
+    <nav th:if="${totalPages > 1}" aria-label="...">
+        <ul class="pagination">
+            <li th:with="disabledPrevious=${currentPage - 1 < 1}"
+                th:class="${disabledPrevious}?'page-item disabled':'page-item'">
+                <a class="page-link" th:href="@{'/menu/' + ${currentPage - 1}}" th:tabindex="${disabledPrevious}?'-1'">Previous</a>
+            </li>
+
+            <div th:each="i:${#numbers.sequence(1, totalPages)}">
+                <li th:with="active=${currentPage == i}" th:class="${active}?'page-item active':'page-item'">
+                    <a class="page-link" th:if="${active}">[[${i}]] <span class="sr-only">(current)</span></a>
+                    <a class="page-link" th:if="${!active}" th:href="@{'/menu/' + ${i}}">[[${i}]]</a>
+                </li>
+            </div>
+
+            <li th:with="disabledNext=${currentPage == totalPages}"
+                th:class="${disabledNext}?'page-item disabled':'page-item'">
+                <a class="page-link" th:href="@{'/menu/' + ${currentPage + 1}}"
+                   th:tabindex="${disabledNext}?'-1'">Next</a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>

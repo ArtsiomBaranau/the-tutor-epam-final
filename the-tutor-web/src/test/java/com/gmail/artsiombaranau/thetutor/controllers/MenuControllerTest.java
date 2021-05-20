@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.ui.Model;
 
@@ -24,11 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MenuControllerTest {
+
+    private static final String MENU = "menu";
 
     @Mock
     QuizService quizService;
@@ -43,6 +45,10 @@ class MenuControllerTest {
     UserDetailsImpl principal;
     @Mock
     Collection<SimpleGrantedAuthority> authorities;
+    @Mock
+    Page<User> pageUser;
+    @Mock
+    Page<Quiz> pageQuiz;
 
     @InjectMocks
     MenuController menuController;
@@ -57,32 +63,48 @@ class MenuControllerTest {
         users = List.of(User.builder().id(1L).build());
         quizzes = List.of(Quiz.builder().id(1L).build());
 
-        given(quizService.findAll()).willReturn(quizzes);
+        doReturn(authorities).when(principal).getAuthorities();
     }
 
     @Test
-    void getAdminMenu() {
+    void getMenu() {
 //        given
-        doReturn(authorities).when(principal).getAuthorities();
         doReturn(true).when(authorities).contains(any(SimpleGrantedAuthority.class));
         given(roleService.findByName(any(Roles.class))).willReturn(roleAdmin);
-        given(userService.findAll()).willReturn(users);
+        given(userService.findPaginated(anyInt(), anyInt())).willReturn(pageUser);
+        given(pageUser.getContent()).willReturn(users);
 //        when
         String viewName = menuController.getMenu(principal, model);
 //        then
-        then(model).should(times(3)).addAttribute(anyString(), any());
-        assertEquals(viewName, "menu");
+        assertEquals(MENU, viewName);
     }
 
     @Test
-    void getUserMenu() {
+    void getUserMenuPage() {
 //        given
-        doReturn(authorities).when(principal).getAuthorities();
         doReturn(false).when(authorities).contains(any(SimpleGrantedAuthority.class));
+        given(quizService.findPaginated(anyInt(), anyInt())).willReturn(pageQuiz);
+        given(pageQuiz.getContent()).willReturn(quizzes);
+//        when
+        String viewName = menuController.getMenuPage(principal, 1, model);
+//        then
+        then(model).should(times(4)).addAttribute(anyString(), any());
+
+        assertEquals(MENU, viewName);
+    }
+
+    @Test
+    void getAdminMenuPage() {
+//        given
+        doReturn(true).when(authorities).contains(any(SimpleGrantedAuthority.class));
+        given(roleService.findByName(any(Roles.class))).willReturn(roleAdmin);
+        given(userService.findPaginated(anyInt(), anyInt())).willReturn(pageUser);
+        given(pageUser.getContent()).willReturn(users);
 //        when
         String viewName = menuController.getMenu(principal, model);
 //        then
-        then(model).should(times(1)).addAttribute(anyString(), anyList());
-        assertEquals(viewName, "menu");
+        then(model).should(times(5)).addAttribute(anyString(), any());
+
+        assertEquals(MENU, viewName);
     }
 }

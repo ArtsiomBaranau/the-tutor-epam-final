@@ -10,11 +10,13 @@ import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -25,29 +27,46 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuController {
 
+    private static final String MENU = "menu";
+
     private final QuizService quizService;
     private final UserService userService;
     private final RoleService roleService;
 
     @GetMapping
     public String getMenu(@AuthenticationPrincipal UserDetailsImpl principal, Model model) {
+
+        return getMenuPage(principal, 1, model);
+    }
+
+    @GetMapping("/{pageNumber}")
+    public String getMenuPage(@AuthenticationPrincipal UserDetailsImpl principal, @PathVariable int pageNumber, Model model) {
+        int pageSize = 3;
+
         if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.name()))) {
-            List<User> users = userService.findAll();
-            List<Quiz> quizzes = quizService.findAll();
+            Page<User> page = userService.findPaginated(pageNumber, pageSize);
+
+            List<User> users = page.getContent();
 
             Role roleAdmin = roleService.findByName(Roles.ADMIN);
 
+            model.addAttribute("currentPage", pageNumber);
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("totalQuizzes", page.getTotalElements());
             model.addAttribute("users", users);
             model.addAttribute("roleAdmin", roleAdmin);
-            model.addAttribute("quizzes", quizzes);
 
-            return "menu";
         } else {
-            List<Quiz> quizzes = quizService.findAll();
+            Page<Quiz> page = quizService.findPaginated(pageNumber, pageSize);
 
+            List<Quiz> quizzes = page.getContent();
+
+            model.addAttribute("currentPage", pageNumber);
+            model.addAttribute("totalPages", page.getTotalPages());
+            model.addAttribute("totalQuizzes", page.getTotalElements());
             model.addAttribute("quizzes", quizzes);
-
-            return "menu";
         }
+
+        return MENU;
     }
 }

@@ -9,15 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -49,6 +50,18 @@ class QuizServiceImplTest {
 //      then
         then(quizRepository).should(times(1)).findAll();
         assertIterableEquals(quizzes,receivedQuizzes);
+        verifyNoMoreInteractions(quizRepository);
+    }
+
+    @Test
+    void findPaginated() {
+//      given
+        Page<Quiz> page = Mockito.mock(Page.class);
+        given(quizRepository.findAll(any(Pageable.class))).willReturn(page);
+//      when
+        Page<Quiz> receivedPage = quizService.findPaginated(1,3);
+//      then
+        then(quizRepository).should(times(1)).findAll(any(Pageable.class));
         verifyNoMoreInteractions(quizRepository);
     }
 

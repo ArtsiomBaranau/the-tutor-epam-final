@@ -71,6 +71,14 @@ class MenuControllerIT {
     }
 
     @Test
+    void getMenuAuthorizedTutor() throws Exception {
+        mockMvc.perform(get("/menu/1")
+                .with(user(tutor)))
+                .andExpect(status().isOk())
+                .andExpect(view().name("menu"));
+    }
+
+    @Test
     void getMenuAuthorizedAdmin() throws Exception {
         mockMvc.perform(get("/menu")
                 .with(user(admin)))

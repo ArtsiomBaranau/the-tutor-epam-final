@@ -124,7 +124,6 @@ public class UserController {
 
     @GetMapping("/{id}/delete")
     public String deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl principal, Model model) {
-//        User userPrincipal = userService.findByUsername(principal.getUsername());
         User userToDelete = userService.findById(id);
 
         if (principal.getUsername().equals(userToDelete.getUsername())) {
@@ -133,7 +132,6 @@ public class UserController {
             log.info("User with id: {} was deleted!", id);
 
             return REDIRECT_LOGOUT;
-//        } else if (userPrincipal.getRoles().contains(roleService.findByName(Roles.ADMIN))) {
         } else if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.name()))) {
             userService.deleteById(id);
 
@@ -176,6 +174,7 @@ public class UserController {
             if (updatedUser != null) {
                 model.addAttribute("user", updatedUser);
 
+                //          TO-DO
                 //          update user session with changing roles!
 
                 log.info("Admin with username: {} took away admin rights from user: {}",principal.getUsername(),updatedUser.getUsername());
@@ -194,6 +193,7 @@ public class UserController {
             if (updatedUser != null) {
                 model.addAttribute("user", updatedUser);
 
+                //          TO-DO
                 //          update user session with changing roles!
 
                 log.info("Admin with username: {} make user: {} to admin",principal.getUsername(),updatedUser.getUsername());
