@@ -4,6 +4,7 @@ import com.gmail.artsiombaranau.thetutor.enums.Roles;
 import com.gmail.artsiombaranau.thetutor.model.Role;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
+import com.gmail.artsiombaranau.thetutor.services.EmailSenderService;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class RegisterController {
     private final UserService userService;
     private final RoleService roleService;
 
-    private final JavaMailSender javaMailSender;
+    private final EmailSenderService emailSenderService;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
@@ -120,16 +121,9 @@ public class RegisterController {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
 //              send success registration message to email
-                SimpleMailMessage emailMessage = new SimpleMailMessage();
-
-                emailMessage.setFrom("the.tutor.application@gmail.com");
-                emailMessage.setTo(savedUser.getEmail());
-                emailMessage.setSubject("Registration in theTutor App");
-                emailMessage.setText("Thanks for registration!");
-
                 try {
-                    javaMailSender.send(emailMessage);
-                } catch (MailException ex) {
+                    emailSenderService.sendMail(savedUser);
+                } catch (MailException | MessagingException ex) {
                     log.error("Some problem with JavaMailSender:" + ex.getCause(), ex);
                 }
 

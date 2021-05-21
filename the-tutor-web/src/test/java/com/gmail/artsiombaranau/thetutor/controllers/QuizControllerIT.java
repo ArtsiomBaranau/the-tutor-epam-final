@@ -1,17 +1,14 @@
 package com.gmail.artsiombaranau.thetutor.controllers;
 
 import com.gmail.artsiombaranau.thetutor.enums.Roles;
-import com.gmail.artsiombaranau.thetutor.model.Answer;
-import com.gmail.artsiombaranau.thetutor.model.Question;
 import com.gmail.artsiombaranau.thetutor.model.Quiz;
 import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
 import com.gmail.artsiombaranau.thetutor.services.SpecialtyService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
-import com.gmail.artsiombaranau.thetutor.utils.QuizUtils;
+import com.gmail.artsiombaranau.thetutor.services.QuizCreatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,14 +17,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,7 +41,7 @@ class QuizControllerIT {
     @MockBean
     SpecialtyService specialtyService;
     @MockBean
-    QuizUtils quizUtils;
+    QuizCreatorService quizCreatorService;
 
     @MockBean
     Quiz quiz;

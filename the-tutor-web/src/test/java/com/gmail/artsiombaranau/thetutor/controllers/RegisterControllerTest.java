@@ -4,6 +4,7 @@ import com.gmail.artsiombaranau.thetutor.enums.Roles;
 import com.gmail.artsiombaranau.thetutor.model.Role;
 import com.gmail.artsiombaranau.thetutor.model.User;
 import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
+import com.gmail.artsiombaranau.thetutor.services.EmailSenderService;
 import com.gmail.artsiombaranau.thetutor.services.RoleService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
@@ -52,7 +52,7 @@ class RegisterControllerTest {
     @Mock
     RoleService roleService;
     @Mock
-    JavaMailSender javaMailSender;
+    EmailSenderService emailSenderService;
     @Mock
     AuthenticationManager authenticationManager;
     @Mock
@@ -133,7 +133,7 @@ class RegisterControllerTest {
     }
 
     @Test
-    void processFormHasNoErrorsAndEmailAndUsernameDoNotExist() {
+    void processFormHasNoErrorsAndEmailAndUsernameDoNotExist() throws MessagingException {
 //      given
         given(bindingResult.hasErrors()).willReturn(false);
         given(userService.existsByUsername(anyString())).willReturn(false);
@@ -154,7 +154,7 @@ class RegisterControllerTest {
         then(userToUserDetailsConverter).should(times(1)).convert(any(User.class));
         then(userDetails).should(times(1)).getAuthorities();
         then(authenticationManager).should(times(1)).authenticate(any());
-        then(javaMailSender).should(times(1)).send(any(SimpleMailMessage.class));
+        then(emailSenderService).should(times(1)).sendMail(any(User.class));
 
         assertEquals(REDIRECT_MENU, viewName);
     }

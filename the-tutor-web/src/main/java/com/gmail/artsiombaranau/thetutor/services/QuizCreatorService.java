@@ -1,16 +1,16 @@
-package com.gmail.artsiombaranau.thetutor.utils;
+package com.gmail.artsiombaranau.thetutor.services;
 
 import com.gmail.artsiombaranau.thetutor.model.Answer;
 import com.gmail.artsiombaranau.thetutor.model.Question;
 import com.gmail.artsiombaranau.thetutor.model.Quiz;
 import com.gmail.artsiombaranau.thetutor.model.User;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-public class QuizUtils {
+@Service
+public class QuizCreatorService {
 
     public Quiz createEmptyQuiz(User user, int questionsQuantity) {
         if (user != null) {

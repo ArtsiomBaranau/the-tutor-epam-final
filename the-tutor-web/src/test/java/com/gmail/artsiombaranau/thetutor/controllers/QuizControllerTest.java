@@ -5,7 +5,7 @@ import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
 import com.gmail.artsiombaranau.thetutor.services.SpecialtyService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
-import com.gmail.artsiombaranau.thetutor.utils.QuizUtils;
+import com.gmail.artsiombaranau.thetutor.services.QuizCreatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class QuizControllerTest {
@@ -40,7 +39,7 @@ class QuizControllerTest {
     @Mock
     SpecialtyService specialtyService;
     @Mock
-    QuizUtils quizUtils;
+    QuizCreatorService quizCreatorService;
 
     @Mock
     Quiz quiz;
@@ -96,14 +95,14 @@ class QuizControllerTest {
 //        given
         given(principal.getUsername()).willReturn("username");
         given(userService.findByUsername(anyString())).willReturn(user);
-        given(quizUtils.createEmptyQuiz(any(User.class), anyInt())).willReturn(emptyQuiz);
+        given(quizCreatorService.createEmptyQuiz(any(User.class), anyInt())).willReturn(emptyQuiz);
         given(specialtyService.findAll()).willReturn(specialties);
 //        when
         String viewName = quizController.createQuizForm(principal, 3, model);
 //        then
         then(principal).should(times(1)).getUsername();
         then(userService).should(times(1)).findByUsername(anyString());
-        then(quizUtils).should(times(1)).createEmptyQuiz(any(User.class), anyInt());
+        then(quizCreatorService).should(times(1)).createEmptyQuiz(any(User.class), anyInt());
         then(specialtyService).should(times(1)).findAll();
         then(model).should(times(2)).addAttribute(anyString(), any());
 

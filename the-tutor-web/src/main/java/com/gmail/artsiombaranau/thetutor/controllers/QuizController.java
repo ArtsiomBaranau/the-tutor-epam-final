@@ -5,7 +5,7 @@ import com.gmail.artsiombaranau.thetutor.security.model.UserDetailsImpl;
 import com.gmail.artsiombaranau.thetutor.services.QuizService;
 import com.gmail.artsiombaranau.thetutor.services.SpecialtyService;
 import com.gmail.artsiombaranau.thetutor.services.UserService;
-import com.gmail.artsiombaranau.thetutor.utils.QuizUtils;
+import com.gmail.artsiombaranau.thetutor.services.QuizCreatorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,7 +38,7 @@ public class QuizController {
     private final QuizService quizService;
     private final SpecialtyService specialtyService;
 
-    private final QuizUtils quizUtils;
+    private final QuizCreatorService quizCreatorService;
 
     @GetMapping("/create/quantity")
     public String chooseQuestionsQuantityPage() {
@@ -56,7 +56,7 @@ public class QuizController {
             return ERROR;
         }
 
-        Quiz quiz = quizUtils.createEmptyQuiz(user, questionsQuantity);
+        Quiz quiz = quizCreatorService.createEmptyQuiz(user, questionsQuantity);
         model.addAttribute("quiz", quiz);
 
         List<Specialty> specialties = specialtyService.findAll();
