@@ -1,5 +1,4 @@
 version: 2.1
-
 jobs:
   build-and-test:
     docker:
@@ -20,7 +19,9 @@ jobs:
       - run:
           name: Test
           command: mvn integration-test
-
+      - run:
+          name: Send to CodeCov
+          command: bash <(curl -s https://codecov.io/bash)
 workflows:
   sample:
     jobs:
