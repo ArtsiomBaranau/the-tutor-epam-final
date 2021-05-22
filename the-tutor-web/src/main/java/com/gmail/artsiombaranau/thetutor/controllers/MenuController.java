@@ -41,7 +41,7 @@ public class MenuController {
 
     @GetMapping("/{pageNumber}")
     public String getMenuPage(@AuthenticationPrincipal UserDetailsImpl principal, @PathVariable int pageNumber, Model model) {
-        int pageSize = 3;
+        int pageSize = 5;
 
         if (principal.getAuthorities().contains(new SimpleGrantedAuthority(Roles.ADMIN.name()))) {
             Page<User> page = userService.findPaginated(pageNumber, pageSize);

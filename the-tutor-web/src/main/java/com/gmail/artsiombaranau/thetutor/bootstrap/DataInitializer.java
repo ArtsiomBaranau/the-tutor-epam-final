@@ -199,6 +199,48 @@ public class DataInitializer implements CommandLineRunner {
 
         quizService.save(quizFour);
 
+        Quiz quizFive = Quiz.builder().name("Computing quiz.").description("A trivial quiz on types of computers!").specialty(computingSpecialty).user(tutorUser).build();
+
+        List<Question> questionsQuizFive = new ArrayList<>();
+
+        Question questionOneQuizFive = Question.builder().description("The acronym PC stands for: ...?").quiz(quizFive).build();
+
+        List<Answer> answersQuestionOneQuizFive = new ArrayList<>();
+
+        answersQuestionOneQuizFive.add(Answer.builder().description("Private computer").isRight(false).question(questionOneQuizFive).build());
+        answersQuestionOneQuizFive.add(Answer.builder().description("Personal computer").isRight(true).question(questionOneQuizFive).build());
+        answersQuestionOneQuizFive.add(Answer.builder().description("Personal compact").isRight(false).question(questionOneQuizFive).build());
+        answersQuestionOneQuizFive.add(Answer.builder().description("Public computer").isRight(false).question(questionOneQuizFive).build());
+
+        questionOneQuizFive.setAnswers(answersQuestionOneQuizFive);
+
+        questionsQuizFive.add(questionOneQuizFive);
+
+        quizFive.setQuestions(questionsQuizFive);
+
+        quizService.save(quizFive);
+
+        Quiz quizSix = Quiz.builder().name("Astronomy quiz.").description("The great astronomy quiz...").specialty(astronomySpecialty).user(tutorUser).build();
+
+        List<Question> questionsQuizSix = new ArrayList<>();
+
+        Question questionOneQuizSix = Question.builder().description("Which galaxy is home to the Solar system?").quiz(quizSix).build();
+
+        List<Answer> answersQuestionOneQuizSix = new ArrayList<>();
+
+        answersQuestionOneQuizSix.add(Answer.builder().description("Milky Way").isRight(true).question(questionOneQuizSix).build());
+        answersQuestionOneQuizSix.add(Answer.builder().description("Pluto").isRight(false).question(questionOneQuizSix).build());
+        answersQuestionOneQuizSix.add(Answer.builder().description("Galileo Galilei").isRight(false).question(questionOneQuizSix).build());
+        answersQuestionOneQuizSix.add(Answer.builder().description("Vega").isRight(false).question(questionOneQuizSix).build());
+
+        questionOneQuizSix.setAnswers(answersQuestionOneQuizSix);
+
+        questionsQuizSix.add(questionOneQuizSix);
+
+        quizSix.setQuestions(questionsQuizSix);
+
+        quizService.save(quizSix);
+
         log.info("Quizzes are loaded.");
     }
 }
