@@ -82,70 +82,72 @@
         </table>
     </div>
 
-    <div sec:authorize="hasAuthority('STUDENT') || hasAuthority('TUTOR')">
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">
-                    <i class="fas fa-book-open fa-lg"></i>
-                </th>
-                <th scope="col">Quiz name.</th>
-                <th scope="col">Quiz specialty.</th>
-                <th scope="col">Quiz description...</th>
-                <th scope="col">Created By.</th>
-                <th scope="col">Actions.</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="quiz:${quizzes}">
-                <th scope="row">
-                    <i class="fas fa-book-open fa-lg"></i>
-                </th>
+    <div sec:authorize="!hasAuthority('ADMIN')">
+        <div sec:authorize="hasAuthority('STUDENT') || hasAuthority('TUTOR')">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">
+                        <i class="fas fa-book-open fa-lg"></i>
+                    </th>
+                    <th scope="col">Quiz name.</th>
+                    <th scope="col">Quiz specialty.</th>
+                    <th scope="col">Quiz description...</th>
+                    <th scope="col">Created By.</th>
+                    <th scope="col">Actions.</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="quiz:${quizzes}">
+                    <th scope="row">
+                        <i class="fas fa-book-open fa-lg"></i>
+                    </th>
 
-                <td th:text="${quiz.name}">Quiz name.</td>
-                <td th:text="${quiz.specialty.description}">Quiz specialty.</td>
-                <td th:text="${quiz.description}">Quiz description...</td>
+                    <td th:text="${quiz.name}">Quiz name.</td>
+                    <td th:text="${quiz.specialty.description}">Quiz specialty.</td>
+                    <td th:text="${quiz.description}">Quiz description...</td>
 
-                <td>
-                    <a th:href="@{/user/{username}(username=${quiz.user.username})}"
-                       th:text="'@'+${quiz.user.username}">@username</a>
-                </td>
+                    <td>
+                        <a th:href="@{/user/{username}(username=${quiz.user.username})}"
+                           th:text="'@'+${quiz.user.username}">@username</a>
+                    </td>
 
-                <td>
-                    <div class="row">
-                        <div sec:authorize="hasAuthority('STUDENT')">
-                            <a th:href="@{/quiz/{id}(id=${quiz.id})}">
-                                <button class="btn-dark float-right">
-                                    Try Quiz!
-                                </button>
-                            </a>
+                    <td>
+                        <div class="row">
+                            <div sec:authorize="hasAuthority('STUDENT')">
+                                <a th:href="@{/quiz/{id}(id=${quiz.id})}">
+                                    <button class="btn-dark float-right">
+                                        Try Quiz!
+                                    </button>
+                                </a>
+                            </div>
+                            <div sec:authorize="hasAnyAuthority('TUTOR')">
+                                <a th:href="@{/quiz/{id}/update(id=${quiz.id})}">
+                                    <button class="btn-dark">
+                                        <i class="far fa-edit fa-lg"></i>
+                                    </button>
+                                </a>
+                            </div>
+                            <div sec:authorize="hasAuthority('TUTOR')">
+                                <a th:href="@{/quiz/{id}/delete(id=${quiz.id})}">
+                                    <button class="btn-dark">
+                                        <i class="fas fa-trash fa-lg"></i>
+                                    </button>
+                                </a>
+                            </div>
                         </div>
-                        <div sec:authorize="hasAnyAuthority('TUTOR')">
-                            <a th:href="@{/quiz/{id}/update(id=${quiz.id})}">
-                                <button class="btn-dark">
-                                    <i class="far fa-edit fa-lg"></i>
-                                </button>
-                            </a>
-                        </div>
-                        <div sec:authorize="hasAuthority('TUTOR')">
-                            <a th:href="@{/quiz/{id}/delete(id=${quiz.id})}">
-                                <button class="btn-dark">
-                                    <i class="fas fa-trash fa-lg"></i>
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
-        <div sec:authorize="hasAuthority('TUTOR')">
-            <a th:href="@{/quiz/create/quantity}">
-                <button class="btn-dark float-right">
-                    Create Quiz!
-                </button>
-            </a>
+            <div sec:authorize="hasAuthority('TUTOR')">
+                <a th:href="@{/quiz/create/quantity}">
+                    <button class="btn-dark float-right">
+                        Create Quiz!
+                    </button>
+                </a>
+            </div>
         </div>
     </div>
 
