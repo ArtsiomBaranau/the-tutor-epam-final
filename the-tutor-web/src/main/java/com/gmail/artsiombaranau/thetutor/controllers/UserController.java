@@ -172,14 +172,12 @@ public class UserController {
             User updatedUser = userService.save(userToUpdate);
 
             if (updatedUser != null) {
-                model.addAttribute("user", updatedUser);
-
                 //          TO-DO
                 //          update user session with changing roles!
 
-                log.info("Admin with username: {} took away admin rights from user: {}",principal.getUsername(),updatedUser.getUsername());
+                log.info("Admin with username: {} took away admin rights from user: {}", principal.getUsername(), updatedUser.getUsername());
 
-                return PROFILE;
+                return getUser(updatedUser.getUsername(), principal, model);
             } else {
                 model.addAttribute("error", "Something went wrong!");
 
@@ -191,14 +189,12 @@ public class UserController {
             User updatedUser = userService.save(userToUpdate);
 
             if (updatedUser != null) {
-                model.addAttribute("user", updatedUser);
-
                 //          TO-DO
                 //          update user session with changing roles!
 
-                log.info("Admin with username: {} make user: {} to admin",principal.getUsername(),updatedUser.getUsername());
+                log.info("Admin with username: {} make user: {} to admin", principal.getUsername(), updatedUser.getUsername());
 
-                return PROFILE;
+                return getUser(updatedUser.getUsername(), principal, model);
             } else {
                 model.addAttribute("error", "Something went wrong!");
 

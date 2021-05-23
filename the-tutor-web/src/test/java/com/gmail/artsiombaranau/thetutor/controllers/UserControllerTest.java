@@ -296,6 +296,9 @@ class UserControllerTest {
         given(roleService.findByName(any(Roles.class))).willReturn(roleAdmin);
         given(userToUpdate.getRoles()).willReturn(List.of(roleStudent));
         given(userService.save(any(User.class))).willReturn(user);
+        given(userService.findByUsername(anyString())).willReturn(userToUpdate);
+        given(principal.getAuthorities()).willReturn(authorities);
+        given(authorities.contains(any(SimpleGrantedAuthority.class))).willReturn(false);
 //        when
         String viewName = userController.adminUser(1L, principal, model);
 //        then
@@ -336,6 +339,9 @@ class UserControllerTest {
         given(roleService.findByName(any(Roles.class))).willReturn(roleAdmin);
         given(userToUpdate.getRoles()).willReturn(List.of(roleAdmin));
         given(userService.save(any(User.class))).willReturn(user);
+        given(userService.findByUsername(anyString())).willReturn(userToUpdate);
+        given(principal.getAuthorities()).willReturn(authorities);
+        given(authorities.contains(any(SimpleGrantedAuthority.class))).willReturn(false);
 //        when
         String viewName = userController.adminUser(1L, principal, model);
 //        then
