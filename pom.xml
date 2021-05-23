@@ -41,6 +41,9 @@
                         <exclude>
                             **/*com/gmail/artsiombaranau/thetutor/bootstrap/**
                         </exclude>
+                        <exclude>
+                            **/*com/gmail/artsiombaranau/thetutor/security/model/**
+                        </exclude>
                     </excludes>
                 </configuration>
                 <executions>
